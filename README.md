@@ -308,11 +308,11 @@ mvn clean test jacoco:report
 
 ## 👥 Autor
 
-**Tu Nombre Completo**
+**FRANZ JOE INGA CHAMPI**
 - 👨‍🎓 Estudiante de Ingeniería de Software - UNI
-- 📧 Email: tu.email@uni.edu.pe
+- 📧 Email: franz.inga.c@uni.edu.pe
 - 💼 LinkedIn: [tu-perfil](https://linkedin.com/in/tu-perfil)
-- 🐱 GitHub: [@tu-usuario](https://github.com/tu-usuario)
+- 🐱 GitHub: [francito69](https://github.com/tu-usuario)
 
 ---
 
@@ -323,7 +323,7 @@ mvn clean test jacoco:report
 - **Escuela:** Ingeniería de Software
 - **Curso:** Construcción de Software I
 - **Ciclo:** 2025-1
-- **Profesor:** [Nombre del Profesor]
+- **Profesor:** []
 
 ---
 
@@ -366,8 +366,8 @@ Este proyecto es de uso **exclusivamente académico** y fue desarrollado como pa
 
 Si tienes preguntas o sugerencias sobre este proyecto:
 
-- 📧 **Email:** tu.email@uni.edu.pe
-- 💬 **Issues:** [Crear un issue](https://github.com/tu-usuario/sistema-reserva-consultas-medicas/issues)
+- 📧 **Email:** franz.inga.c@uni.edu.pe
+- 💬 **Issues:** [Crear un issue](https://github.com/francito69/sistema-reserva-consultas-medicas/issues)
 - 📖 **Wiki:** [Documentación adicional](https://github.com/tu-usuario/sistema-reserva-consultas-medicas/wiki)
 
 ---
@@ -379,7 +379,7 @@ Si este proyecto te sirvió como referencia o te fue útil, no olvides darle una
 ---
 
 <div align="center">
-  <strong>Desarrollado con ❤️ por [Tu Nombre]</strong>
+  <strong>Desarrollado con ❤️ por [francito69]</strong>
   <br>
   Universidad Nacional de Ingeniería - 2025
 </div>
