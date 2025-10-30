@@ -1,0 +1,299 @@
+@startuml diagrama-objetos
+!define LIGHTORANGE #FFE5CC
+!define LIGHTBLUE #E3F2FD
+!define LIGHTGREEN #E8F5E9
+!define LIGHTYELLOW #FFF9C4
+
+skinparam backgroundColor white
+skinparam objectBorderColor #333333
+skinparam objectBackgroundColor LIGHTBLUE
+skinparam arrowColor #666666
+
+title Diagrama de Objetos - Sistema de Reserva de Consultas Médicas\nInstancias de Ejemplo
+
+object ":Sistema" as sistema {
+  nombre = "Sistema de Reserva de Consultas Médicas Externas"
+  version = "1.0"
+  fechaActual = "2025-10-29"
+}
+
+' Pacientes
+object "paciente1:Paciente" as p1 {
+  dni = "72345678"
+  nombre = "Juan"
+  apellidos = "Pérez García"
+  fechaNacimiento = "1990-05-15"
+  sexo = "M"
+  email = "juan.perez@email.com"
+  telefono = "987654321"
+  direccion = "Av. Principal 123, Lima"
+  estadoCuenta = "Activa"
+}
+
+object "paciente2:Paciente" as p2 {
+  dni = "71234567"
+  nombre = "María"
+  apellidos = "González López"
+  fechaNacimiento = "1985-08-22"
+  sexo = "F"
+  email = "maria.gonzalez@email.com"
+  telefono = "965432187"
+  direccion = "Jr. Los Olivos 456, Lima"
+  estadoCuenta = "Activa"
+}
+
+' Especialidades Médicas
+object "esp1:Especialidad" as esp1 {
+  id = "ESP001"
+  nombre = "Cardiología"
+  descripcion = "Especialidad médica del corazón"
+  activo = true
+}
+
+object "esp2:Especialidad" as esp2 {
+  id = "ESP002"
+  nombre = "Pediatría"
+  descripcion = "Atención médica infantil"
+  activo = true
+}
+
+object "esp3:Especialidad" as esp3 {
+  id = "ESP003"
+  nombre = "Traumatología"
+  descripcion = "Lesiones del sistema músculo-esquelético"
+  activo = true
+}
+
+' Médicos
+object "med1:Medico" as med1 {
+  cmp = "054321"
+  dni = "40123456"
+  nombre = "Dr. Carlos"
+  apellidos = "Ramírez Torres"
+  email = "carlos.ramirez@hospital.com"
+  telefono = "987123456"
+  añosExperiencia = 15
+  estadoLaboral = "Activo"
+}
+
+object "med2:Medico" as med2 {
+  cmp = "054789"
+  dni = "40234567"
+  nombre = "Dra. Ana"
+  apellidos = "Martínez Sánchez"
+  email = "ana.martinez@hospital.com"
+  telefono = "987234567"
+  añosExperiencia = 10
+  estadoLaboral = "Activo"
+}
+
+object "med3:Medico" as med3 {
+  cmp = "055123"
+  dni = "40345678"
+  nombre = "Dr. Luis"
+  apellidos = "Flores Díaz"
+  email = "luis.flores@hospital.com"
+  telefono = "987345678"
+  añosExperiencia = 8
+  estadoLaboral = "Activo"
+}
+
+' Consultorios
+object "cons1:Consultorio" as cons1 {
+  numero = "101"
+  piso = "1"
+  edificio = "A"
+  capacidad = 1
+  equipamiento = "Básico"
+  estado = "Disponible"
+}
+
+object "cons2:Consultorio" as cons2 {
+  numero = "205"
+  piso = "2"
+  edificio = "A"
+  capacidad = 1
+  equipamiento = "Completo"
+  estado = "Disponible"
+}
+
+object "cons3:Consultorio" as cons3 {
+  numero = "310"
+  piso = "3"
+  edificio = "B"
+  capacidad = 1
+  equipamiento = "Pediátrico"
+  estado = "Disponible"
+}
+
+' Horarios de Atención
+object "h1:HorarioAtencion" as h1 {
+  diaSemana = "Lunes"
+  horaInicio = "08:00"
+  horaFin = "13:00"
+  duracionCita = 30
+  maxCitas = 10
+  estado = "Activo"
+}
+
+object "h2:HorarioAtencion" as h2 {
+  diaSemana = "Miércoles"
+  horaInicio = "14:00"
+  horaFin = "18:00"
+  duracionCita = 30
+  maxCitas = 8
+  estado = "Activo"
+}
+
+object "h3:HorarioAtencion" as h3 {
+  diaSemana = "Martes"
+  horaInicio = "09:00"
+  horaFin = "12:00"
+  duracionCita = 20
+  maxCitas = 9
+  estado = "Activo"
+}
+
+' Citas Médicas
+object "cita1:CitaMedica" as cita1 {
+  numeroCita = "CITA-2025-001"
+  fechaCita = "2025-11-05"
+  horaCita = "09:00"
+  motivo = "Control cardiológico rutinario"
+  estadoCita = "Confirmada"
+  fechaRegistro = "2025-10-28"
+}
+
+object "cita2:CitaMedica" as cita2 {
+  numeroCita = "CITA-2025-002"
+  fechaCita = "2025-11-06"
+  horaCita = "10:00"
+  motivo = "Control pediátrico mensual"
+  estadoCita = "Pendiente"
+  fechaRegistro = "2025-10-29"
+}
+
+object "cita3:CitaMedica" as cita3 {
+  numeroCita = "CITA-2025-003"
+  fechaCita = "2025-10-30"
+  horaCita = "15:00"
+  motivo = "Dolor en rodilla derecha"
+  estadoCita = "Atendida"
+  fechaRegistro = "2025-10-20"
+}
+
+' Historia Clínica
+object "hc1:HistoriaClinica" as hc1 {
+  numeroHistoria = "HC-2025-00123"
+  fechaApertura = "2025-01-15"
+  tipoSangre = "O+"
+  alergias = "Penicilina"
+  antecedentes = "Hipertensión"
+}
+
+object "hc2:HistoriaClinica" as hc2 {
+  numeroHistoria = "HC-2025-00124"
+  fechaApertura = "2025-03-20"
+  tipoSangre = "A+"
+  alergias = "Ninguna"
+  antecedentes = "Ninguno"
+}
+
+' Diagnósticos
+object "diag1:Diagnostico" as diag1 {
+  codigo = "I10"
+  descripcion = "Hipertensión arterial controlada"
+  fecha = "2025-10-30"
+  observaciones = "Continuar tratamiento"
+}
+
+object "diag2:Diagnostico" as diag2 {
+  codigo = "M25.561"
+  descripcion = "Dolor en rodilla derecha"
+  fecha = "2025-10-30"
+  observaciones = "Requiere radiografía"
+}
+
+' Tratamientos
+object "trat1:Tratamiento" as trat1 {
+  descripcion = "Enalapril 10mg cada 12 horas"
+  fechaInicio = "2025-10-30"
+  duracion = "30 días"
+  indicaciones = "Tomar después de las comidas"
+}
+
+object "trat2:Tratamiento" as trat2 {
+  descripcion = "Ibuprofeno 400mg cada 8 horas"
+  fechaInicio = "2025-10-30"
+  duracion = "7 días"
+  indicaciones = "Tomar con alimentos, aplicar hielo local"
+}
+
+' Relaciones del Sistema
+sistema --> p1
+sistema --> p2
+sistema --> med1
+sistema --> med2
+sistema --> med3
+sistema --> esp1
+sistema --> esp2
+sistema --> esp3
+
+' Relaciones Paciente - Historia Clínica
+p1 --> hc1 : "tiene"
+p2 --> hc2 : "tiene"
+
+' Relaciones Paciente - Citas
+p1 --> cita1 : "solicita"
+p2 --> cita2 : "solicita"
+p1 --> cita3 : "solicita"
+
+' Relaciones Médico - Especialidad
+med1 --> esp1 : "especializado en"
+med2 --> esp2 : "especializado en"
+med3 --> esp3 : "especializado en"
+
+' Relaciones Médico - Horario
+med1 --> h1 : "atiende en"
+med2 --> h3 : "atiende en"
+med3 --> h2 : "atiende en"
+
+' Relaciones Médico - Cita
+med1 --> cita1 : "atiende"
+med2 --> cita2 : "atiende"
+med3 --> cita3 : "atiende"
+
+' Relaciones Consultorio - Cita
+cons1 --> cita1 : "asignado a"
+cons3 --> cita2 : "asignado a"
+cons2 --> cita3 : "asignado a"
+
+' Relaciones Cita - Diagnóstico
+cita3 --> diag1 : "genera"
+cita3 --> diag2 : "genera"
+
+' Relaciones Cita - Historia Clínica
+cita1 --> hc1 : "registra en"
+cita3 --> hc1 : "registra en"
+cita2 --> hc2 : "registra en"
+
+' Relaciones Diagnóstico - Tratamiento
+diag1 --> trat1 : "prescribe"
+diag2 --> trat2 : "prescribe"
+
+note right of sistema
+  El sistema gestiona todas las
+  entidades y sus relaciones
+end note
+
+note bottom of cita3
+  Cita ya atendida con
+  diagnóstico y tratamiento
+end note
+
+note bottom of p1
+  Paciente con historial
+  de hipertensión
+end note
+
+@enduml

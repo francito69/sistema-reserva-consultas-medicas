@@ -617,41 +617,912 @@ CHECK (intentos_envio >= 0)
 **Total de Entidades:** 11
 
 ---
+# 4.8.0 Diagrama de Clases - Sistema de Reserva de Consultas Médicas
+ubicacion: [diagramas/diagrama-clases.png](../diagramas/diagrama-clases.png)
 
-## 4.8. Diagrama de Objetos (Instancias de Ejemplo)
+## 📖 Descripción General
 
-**Ubicación:** [diagramas/diagrama-objetos.png](../diagramas/diagrama-objetos.png)
+El diagrama de clases representa la **estructura estática** del sistema de reserva de consultas médicas externas. Este diagrama muestra todas las clases del sistema, sus atributos, métodos y las relaciones entre ellas, proporcionando una visión completa de la arquitectura del software.
 
-El diagrama de objetos muestra ejemplos concretos de instancias:
+## 🎯 Propósito del Diagrama
 
-**Ejemplo de Instancias:**
+El diagrama tiene como objetivo:
 
-```
-PACIENTE #1001
-- dni: "12345678"
-- nombres: "Juan Carlos"
-- apellido_paterno: "Pérez"
-- apellido_materno: "García"
-- email: "juan.perez@email.com"
+1. **Definir la estructura** de todas las clases del sistema
+2. **Establecer las relaciones** entre las diferentes entidades
+3. **Especificar atributos y métodos** de cada clase
+4. **Servir como base** para la implementación del código
+5. **Documentar la arquitectura** del sistema
 
-MEDICO #2001
-- dni: "87654321"
-- nombres: "María Elena"
-- apellido_paterno: "López"
-- numero_colegiatura: "CMP-45678"
+## 🏗️ Arquitectura del Sistema
 
-ESPECIALIDAD #3001
-- codigo: "CARD-01"
-- nombre: "Cardiología"
+El sistema está organizado en **7 paquetes principales**:
 
-CITA #4001
-- codigo_cita: "CITA-2025-001"
-- id_paciente: 1001
-- id_medico: 2001
-- fecha_cita: "2025-11-15"
-- hora_inicio: "09:00"
-- estado: "CONFIRMADA"
-```
+### 1. **Gestión de Usuarios** 👥
+Maneja todos los tipos de usuarios del sistema.
+
+### 2. **Gestión de Citas** 📅
+Controla el proceso de reserva y seguimiento de citas médicas.
+
+### 3. **Gestión de Especialidades** 🏥
+Administra las especialidades médicas disponibles.
+
+### 4. **Gestión de Historia Clínica** 📋
+Mantiene el registro médico completo de los pacientes.
+
+### 5. **Gestión de Facturación** 💰
+Procesa pagos y genera facturas.
+
+### 6. **Sistema de Notificaciones** 📧
+Envía recordatorios y alertas a usuarios.
+
+### 7. **Clase Sistema** ⚙️
+Clase principal que coordina todo el sistema.
+
+---
+
+## 📦 Descripción Detallada de Paquetes y Clases
+
+## 1️⃣ Package: Gestión de Usuarios
+
+### Clase Abstracta: **Usuario**
+
+**Descripción:** Clase base abstracta que define las características comunes de todos los usuarios del sistema.
+
+**Atributos:**
+- `# dni: String` - Documento Nacional de Identidad (único)
+- `# nombre: String` - Nombre del usuario
+- `# apellidos: String` - Apellidos del usuario
+- `# fechaNacimiento: Date` - Fecha de nacimiento
+- `# sexo: char` - Sexo del usuario (M/F)
+- `# email: String` - Correo electrónico (único)
+- `# telefono: String` - Número de teléfono
+- `# direccion: String` - Dirección de domicilio
+- `# fechaRegistro: Date` - Fecha de registro en el sistema
+
+**Métodos:**
+- `+ {abstract} iniciarSesion(usuario: String, password: String): boolean`
+- `+ actualizarDatos(): void`
+- `+ validarDatos(): boolean`
+- `+ obtenerNombreCompleto(): String`
+
+**Relaciones:**
+- Es **generalizada** por: Paciente, Medico, Administrador
+
+---
+
+### Clase: **Paciente** (hereda de Usuario)
+
+**Descripción:** Representa a los pacientes que solicitan citas médicas.
+
+**Atributos Adicionales:**
+- `- numeroHistoriaClinica: String` - Número único de historia clínica
+- `- estadoCuenta: String` - Estado de la cuenta (Activa/Inactiva)
+- `- fotoPerfil: Image` - Foto de perfil del paciente
+
+**Métodos:**
+- `+ registrarse(): boolean` - Registra un nuevo paciente
+- `+ solicitarCita(fecha: Date, especialidad: Especialidad): CitaMedica` - Crea una nueva cita
+- `+ cancelarCita(cita: CitaMedica): boolean` - Cancela una cita existente
+- `+ consultarHistorial(): HistoriaClinica` - Consulta su historia clínica
+- `+ actualizarPerfil(): void` - Actualiza datos del perfil
+- `+ verificarCuenta(email: String): boolean` - Verifica la cuenta por email
+
+**Relaciones:**
+- Tiene **1** HistoriaClinica
+- Solicita **0..*** CitaMedica
+- Genera **0..*** Factura
+- Recibe **0..*** Notificacion
+
+---
+
+### Clase: **Medico** (hereda de Usuario)
+
+**Descripción:** Representa a los médicos que atienden a los pacientes.
+
+**Atributos Adicionales:**
+- `- cmp: String` - Código del Colegio Médico del Perú (único)
+- `- especialidadId: String` - ID de la especialidad
+- `- añosExperiencia: int` - Años de experiencia profesional
+- `- estadoLaboral: String` - Estado laboral (Activo/Inactivo/Vacaciones)
+- `- curriculum: String` - Currículum vitae
+
+**Métodos:**
+- `+ registrarHorario(horario: HorarioAtencion): void` - Define horarios de atención
+- `+ consultarAgenda(fecha: Date): List<CitaMedica>` - Consulta citas programadas
+- `+ atenderCita(cita: CitaMedica): void` - Marca una cita como atendida
+- `+ registrarDiagnostico(cita: CitaMedica, diag: Diagnostico): void` - Registra diagnóstico
+- `+ prescribirTratamiento(diagnostico: Diagnostico): Tratamiento` - Prescribe tratamiento
+- `+ modificarHorario(horario: HorarioAtencion): void` - Modifica horarios
+
+**Relaciones:**
+- Está **especializado en 1** Especialidad
+- Define **0..*** HorarioAtencion
+- Atiende **0..*** CitaMedica
+- Recibe **0..*** Notificacion
+
+---
+
+### Clase: **Administrador** (hereda de Usuario)
+
+**Descripción:** Gestiona la administración del sistema.
+
+**Atributos Adicionales:**
+- `- rol: String` - Rol del administrador
+- `- permisos: List<String>` - Lista de permisos asignados
+- `- nivelAcceso: int` - Nivel de acceso (1-5)
+
+**Métodos:**
+- `+ gestionarUsuarios(): void` - Administra usuarios del sistema
+- `+ configurarSistema(): void` - Configura parámetros del sistema
+- `+ generarReportes(): void` - Genera reportes estadísticos
+- `+ asignarConsultorios(): void` - Asigna consultorios a citas
+- `+ administrarEspecialidades(): void` - Gestiona especialidades médicas
+
+---
+
+## 2️⃣ Package: Gestión de Citas
+
+### Clase: **CitaMedica**
+
+**Descripción:** Representa una cita médica programada.
+
+**Atributos:**
+- `- numeroCita: String` - Número único de cita (formato: CITA-YYYY-NNN)
+- `- fechaCita: Date` - Fecha programada de la cita
+- `- horaCita: Time` - Hora programada
+- `- motivo: String` - Motivo de consulta
+- `- estadoCita: String` - Estado (Pendiente/Confirmada/Atendida/Cancelada)
+- `- observaciones: String` - Observaciones adicionales
+- `- fechaRegistro: Date` - Fecha de registro de la cita
+- `- costoConsulta: double` - Costo de la consulta
+
+**Métodos:**
+- `+ confirmarCita(): void` - Confirma la cita
+- `+ cancelarCita(motivo: String): boolean` - Cancela la cita
+- `+ reprogramarCita(nuevaFecha: Date): boolean` - Reprograma la cita
+- `+ marcarComoAtendida(): void` - Marca como atendida
+- `+ generarComprobante(): String` - Genera comprobante
+- `+ enviarRecordatorio(): void` - Envía recordatorio al paciente
+
+**Relaciones:**
+- Es solicitada por **1** Paciente
+- Es atendida por **1** Medico
+- Está asignada a **1** Consultorio
+- Es registrada en **1** HistoriaClinica
+- Genera **0..*** Diagnostico
+- Genera **0..1** Factura
+- Genera **0..*** Notificacion
+
+---
+
+### Clase: **HorarioAtencion**
+
+**Descripción:** Define los horarios de atención de los médicos.
+
+**Atributos:**
+- `- id: int` - Identificador único
+- `- diaSemana: String` - Día de la semana
+- `- horaInicio: Time` - Hora de inicio
+- `- horaFin: Time` - Hora de fin
+- `- duracionCita: int` - Duración en minutos de cada cita
+- `- maxCitas: int` - Máximo de citas por horario
+- `- estado: String` - Estado (Activo/Inactivo)
+
+**Métodos:**
+- `+ validarHorario(): boolean` - Valida que el horario sea correcto
+- `+ calcularDisponibilidad(): int` - Calcula citas disponibles
+- `+ verificarConflictos(): boolean` - Verifica conflictos de horario
+- `+ obtenerCitasDisponibles(): List<Time>` - Lista horas disponibles
+
+**Relaciones:**
+- Es definido por **1** Medico
+
+---
+
+### Clase: **Consultorio**
+
+**Descripción:** Representa un consultorio físico del hospital.
+
+**Atributos:**
+- `- numero: String` - Número del consultorio
+- `- piso: String` - Piso donde se encuentra
+- `- edificio: String` - Edificio donde se ubica
+- `- capacidad: int` - Capacidad de personas
+- `- equipamiento: String` - Descripción del equipamiento
+- `- estado: String` - Estado (Disponible/Ocupado/Mantenimiento)
+
+**Métodos:**
+- `+ verificarDisponibilidad(fecha: Date, hora: Time): boolean`
+- `+ reservarConsultorio(): void`
+- `+ liberarConsultorio(): void`
+- `+ registrarMantenimiento(): void`
+
+**Relaciones:**
+- Tiene asignadas **0..*** CitaMedica
+
+---
+
+## 3️⃣ Package: Gestión de Especialidades
+
+### Clase: **Especialidad**
+
+**Descripción:** Representa una especialidad médica del hospital.
+
+**Atributos:**
+- `- id: String` - Identificador único
+- `- nombre: String` - Nombre de la especialidad
+- `- descripcion: String` - Descripción de la especialidad
+- `- activo: boolean` - Si está activa
+- `- costoBase: double` - Costo base de consulta
+
+**Métodos:**
+- `+ obtenerMedicos(): List<Medico>` - Lista médicos de la especialidad
+- `+ activar(): void` - Activa la especialidad
+- `+ desactivar(): void` - Desactiva la especialidad
+
+**Relaciones:**
+- Tiene **0..*** Medico especializados
+
+---
+
+## 4️⃣ Package: Gestión de Historia Clínica
+
+### Clase: **HistoriaClinica**
+
+**Descripción:** Almacena el historial médico completo de un paciente.
+
+**Atributos:**
+- `- numeroHistoria: String` - Número único de historia (formato: HC-YYYY-NNNNN)
+- `- fechaApertura: Date` - Fecha de apertura de la historia
+- `- tipoSangre: String` - Tipo de sangre del paciente
+- `- alergias: String` - Alergias conocidas
+- `- antecedentes: String` - Antecedentes médicos
+- `- observacionesGenerales: String` - Observaciones generales
+
+**Métodos:**
+- `+ agregarCita(cita: CitaMedica): void` - Agrega una cita al historial
+- `+ consultarHistorial(): List<CitaMedica>` - Consulta todas las citas
+- `+ generarResumen(): String` - Genera resumen de la historia
+- `+ exportarPDF(): File` - Exporta historia en PDF
+
+**Relaciones:**
+- Pertenece a **1** Paciente
+- Contiene **0..*** CitaMedica
+- Contiene **0..*** Diagnostico
+- Incluye **0..*** ExamenMedico
+
+---
+
+### Clase: **Diagnostico**
+
+**Descripción:** Representa un diagnóstico médico.
+
+**Atributos:**
+- `- id: int` - Identificador único
+- `- codigo: String` - Código CIE-10
+- `- descripcion: String` - Descripción del diagnóstico
+- `- fecha: Date` - Fecha del diagnóstico
+- `- observaciones: String` - Observaciones adicionales
+- `- gravedad: String` - Gravedad (Leve/Moderada/Grave)
+
+**Métodos:**
+- `+ registrarDiagnostico(): void`
+- `+ actualizarDiagnostico(): void`
+- `+ vincularTratamiento(tratamiento: Tratamiento): void`
+
+**Relaciones:**
+- Es generado por **1** CitaMedica
+- Está contenido en **1** HistoriaClinica
+- Prescribe **0..*** Tratamiento
+
+---
+
+### Clase: **Tratamiento**
+
+**Descripción:** Representa un tratamiento médico prescrito.
+
+**Atributos:**
+- `- id: int` - Identificador único
+- `- descripcion: String` - Descripción del tratamiento
+- `- fechaInicio: Date` - Fecha de inicio
+- `- fechaFin: Date` - Fecha de fin
+- `- duracion: String` - Duración del tratamiento
+- `- indicaciones: String` - Indicaciones para el paciente
+- `- medicamentos: String` - Medicamentos prescritos
+
+**Métodos:**
+- `+ prescribirTratamiento(): void`
+- `+ modificarTratamiento(): void`
+- `+ finalizarTratamiento(): void`
+- `+ generarReceta(): String`
+
+**Relaciones:**
+- Es prescrito por **1** Diagnostico
+
+---
+
+### Clase: **ExamenMedico**
+
+**Descripción:** Representa exámenes médicos solicitados.
+
+**Atributos:**
+- `- id: int` - Identificador único
+- `- tipoExamen: String` - Tipo de examen
+- `- descripcion: String` - Descripción del examen
+- `- fechaSolicitud: Date` - Fecha de solicitud
+- `- fechaResultado: Date` - Fecha del resultado
+- `- resultado: String` - Resultado del examen
+- `- archivoAdjunto: File` - Archivo con resultados
+
+**Métodos:**
+- `+ solicitarExamen(): void`
+- `+ registrarResultado(resultado: String): void`
+- `+ adjuntarArchivo(archivo: File): void`
+
+**Relaciones:**
+- Está incluido en **1** HistoriaClinica
+
+---
+
+## 5️⃣ Package: Gestión de Facturación
+
+### Clase: **Factura**
+
+**Descripción:** Representa una factura por servicios médicos.
+
+**Atributos:**
+- `- numeroFactura: String` - Número único de factura
+- `- fecha: Date` - Fecha de emisión
+- `- monto: double` - Monto base
+- `- igv: double` - Impuesto (18%)
+- `- total: double` - Total a pagar
+- `- estadoPago: String` - Estado (Pendiente/Pagado/Anulado)
+- `- metodoPago: String` - Método de pago utilizado
+
+**Métodos:**
+- `+ generarFactura(): void`
+- `+ calcularTotal(): double`
+- `+ registrarPago(): void`
+- `+ anularFactura(): void`
+- `+ imprimirFactura(): File`
+
+**Relaciones:**
+- Es generada por **1** Paciente
+- Corresponde a **1** CitaMedica
+- Es procesada con **1..*** Pago
+
+---
+
+### Clase: **Pago**
+
+**Descripción:** Representa un pago realizado.
+
+**Atributos:**
+- `- idPago: int` - Identificador único
+- `- monto: double` - Monto pagado
+- `- fechaPago: Date` - Fecha del pago
+- `- metodoPago: String` - Método (Efectivo/Tarjeta/Transferencia)
+- `- numeroTransaccion: String` - Número de transacción
+- `- comprobante: String` - Comprobante de pago
+
+**Métodos:**
+- `+ procesarPago(): boolean`
+- `+ verificarPago(): boolean`
+- `+ generarComprobante(): String`
+
+**Relaciones:**
+- Procesa **1** Factura
+
+---
+
+## 6️⃣ Package: Sistema de Notificaciones
+
+### Clase Abstracta: **Notificacion**
+
+**Descripción:** Clase base para diferentes tipos de notificaciones.
+
+**Atributos:**
+- `- id: int` - Identificador único
+- `- tipo: String` - Tipo de notificación
+- `- mensaje: String` - Contenido del mensaje
+- `- fecha: Date` - Fecha de envío
+- `- leida: boolean` - Si fue leída
+- `- prioridad: String` - Prioridad (Alta/Media/Baja)
+
+**Métodos:**
+- `+ enviarNotificacion(): void`
+- `+ marcarComoLeida(): void`
+- `+ programarEnvio(fecha: Date): void`
+
+**Relaciones:**
+- Es recibida por **1** Paciente o Medico
+- Es generada por **1** CitaMedica
+- Es **generalizada** por: Email, SMS
+
+---
+
+### Clase: **Email** (hereda de Notificacion)
+
+**Atributos Adicionales:**
+- `- asunto: String` - Asunto del correo
+- `- cuerpo: String` - Cuerpo del mensaje
+- `- destinatario: String` - Email del destinatario
+- `- adjuntos: List<File>` - Archivos adjuntos
+
+**Métodos:**
+- `+ enviarEmail(): boolean`
+- `+ agregarAdjunto(archivo: File): void`
+
+---
+
+### Clase: **SMS** (hereda de Notificacion)
+
+**Atributos Adicionales:**
+- `- numeroDestino: String` - Número de teléfono
+- `- texto: String` - Texto del SMS (máx 160 caracteres)
+- `- estadoEnvio: String` - Estado de envío
+
+**Métodos:**
+- `+ enviarSMS(): boolean`
+
+---
+
+## 7️⃣ Clase Principal: Sistema
+
+### Clase: **Sistema**
+
+**Descripción:** Clase principal que coordina todo el sistema.
+
+**Atributos:**
+- `- nombre: String` - Nombre del sistema
+- `- version: String` - Versión del sistema
+- `- fechaActual: Date` - Fecha actual del sistema
+
+**Métodos:**
+- `+ iniciarSistema(): void`
+- `+ cerrarSistema(): void`
+- `+ obtenerFechaActual(): Date`
+
+**Relaciones:**
+- Gestiona **0..*** Usuario
+- Administra **0..*** CitaMedica
+- Contiene **0..*** Especialidad
+
+---
+
+## 🔗 Tipos de Relaciones
+
+### **Herencia (Generalización)**
+- Usuario ◁─ Paciente
+- Usuario ◁─ Medico
+- Usuario ◁─ Administrador
+- Notificacion ◁─ Email
+- Notificacion ◁─ SMS
+
+### **Asociación**
+- Paciente ── HistoriaClinica (1:1)
+- Paciente ── CitaMedica (1:*)
+- Medico ── Especialidad (*:1)
+- CitaMedica ── Consultorio (*:1)
+
+### **Composición**
+- HistoriaClinica ◆── Diagnostico
+- HistoriaClinica ◆── ExamenMedico
+
+### **Dependencia**
+- Diagnostico ··> Tratamiento
+
+---
+
+## 📋 Multiplicidades
+
+| Relación | Multiplicidad | Descripción |
+|----------|---------------|-------------|
+| Paciente - HistoriaClinica | 1:1 | Un paciente tiene una historia clínica |
+| Paciente - CitaMedica | 1:* | Un paciente puede tener muchas citas |
+| Medico - CitaMedica | 1:* | Un médico atiende muchas citas |
+| Medico - Especialidad | *:1 | Muchos médicos pueden tener una especialidad |
+| CitaMedica - Consultorio | *:1 | Muchas citas en un consultorio |
+| CitaMedica - Diagnostico | 1:* | Una cita puede generar varios diagnósticos |
+| Diagnostico - Tratamiento | 1:* | Un diagnóstico puede tener varios tratamientos |
+| Factura - Pago | 1:1..* | Una factura puede tener uno o más pagos |
+
+---
+
+## 💡 Patrones de Diseño Aplicados
+
+### 1. **Patrón de Herencia (Inheritance)**
+- Clase abstracta `Usuario` con subclases concretas
+- Clase abstracta `Notificacion` con subclases concretas
+
+### 2. **Patrón de Composición**
+- `HistoriaClinica` compone `Diagnostico` y `ExamenMedico`
+
+### 3. **Patrón de Singleton (Implícito)**
+- La clase `Sistema` actúa como punto central de coordinación
+
+---
+
+## ✅ Validación del Diseño
+
+El diagrama de clases permite:
+
+✅ **Gestión completa de usuarios** (Pacientes, Médicos, Administradores)  
+✅ **Reserva y seguimiento de citas** médicas  
+✅ **Registro de historiales clínicos** completos  
+✅ **Diagnósticos y tratamientos** médicos  
+✅ **Facturación y pagos** de servicios  
+✅ **Sistema de notificaciones** automático  
+✅ **Asignación de consultorios** y horarios  
+✅ **Especialidades médicas** diferenciadas  
+
+---
+
+## 📊 Estadísticas del Diagrama
+
+- **Total de Clases:** 18
+- **Clases Abstractas:** 2 (Usuario, Notificacion)
+- **Paquetes:** 7
+- **Relaciones de Herencia:** 5
+- **Relaciones de Asociación:** 15+
+- **Métodos Totales:** ~120+
+- **Atributos Totales:** ~110+
+
+---
+
+**Herramienta:** PlantUML  
+**Formato:** PNG, 300 DPI  
+**Versión:** 1.0  
+**Fecha:** Octubre 2025  
+**Fuente:** Elaboración propia
+
+
+
+# 4.8 Diagrama de Objetos (Instancias de Ejemplo)
+
+Ubicación:[diagramas/diagrama-objetos.png](../diagramas/diagrama-objetos.png)
+## Descripción General
+
+El diagrama de objetos representa un **snapshot** o instantánea del sistema de reserva de consultas médicas en un momento específico del tiempo. Este diagrama muestra instancias concretas de las clases del sistema con valores reales y sus relaciones específicas, ilustrando cómo funciona el sistema en un escenario de uso típico.
+
+## Propósito del Diagrama
+
+El diagrama tiene como objetivo:
+
+1. **Ilustrar instancias reales** del sistema con datos concretos
+2. **Mostrar relaciones específicas** entre objetos en tiempo de ejecución
+3. **Complementar el diagrama de clases** mostrando ejemplos prácticos
+4. **Facilitar la comprensión** del funcionamiento del sistema
+5. **Validar el modelo de datos** con casos de uso reales
+
+## Escenario Representado
+
+El diagrama muestra un escenario típico del sistema donde:
+
+- **Dos pacientes** están registrados en el sistema
+- **Tres médicos** de diferentes especialidades están disponibles
+- **Tres citas médicas** en diferentes estados (confirmada, pendiente, atendida)
+- **Una cita completada** que incluye diagnóstico y tratamiento
+- **Historias clínicas activas** para ambos pacientes
+- **Consultorios asignados** para cada cita
+
+## Descripción de las Instancias
+
+### 1. Sistema Principal
+
+**`:Sistema`**
+- Representa la instancia del sistema completo
+- Gestiona todas las entidades y sus relaciones
+- Mantiene la fecha actual: 2025-10-29
+
+### 2. Pacientes
+
+**`paciente1:Paciente` - Juan Pérez García**
+- **DNI:** 72345678
+- **Fecha de Nacimiento:** 15/05/1990
+- **Contacto:** juan.perez@email.com, 987654321
+- **Estado:** Cuenta Activa
+- **Antecedentes:** Hipertensión arterial
+- **Citas:** Tiene 2 citas (una confirmada y una atendida)
+
+**`paciente2:Paciente` - María González López**
+- **DNI:** 71234567
+- **Fecha de Nacimiento:** 22/08/1985
+- **Contacto:** maria.gonzalez@email.com, 965432187
+- **Estado:** Cuenta Activa
+- **Antecedentes:** Ninguno
+- **Citas:** Tiene 1 cita pendiente
+
+### 3. Médicos y Especialidades
+
+**`med1:Medico` - Dr. Carlos Ramírez Torres**
+- **CMP:** 054321
+- **Especialidad:** Cardiología
+- **Experiencia:** 15 años
+- **Horario:** Lunes 08:00-13:00
+- **Estado:** Activo
+- **Cita asignada:** CITA-2025-001 (Consultorio 101)
+
+**`med2:Medico` - Dra. Ana Martínez Sánchez**
+- **CMP:** 054789
+- **Especialidad:** Pediatría
+- **Experiencia:** 10 años
+- **Horario:** Martes 09:00-12:00
+- **Estado:** Activo
+- **Cita asignada:** CITA-2025-002 (Consultorio 310)
+
+**`med3:Medico` - Dr. Luis Flores Díaz**
+- **CMP:** 055123
+- **Especialidad:** Traumatología
+- **Experiencia:** 8 años
+- **Horario:** Miércoles 14:00-18:00
+- **Estado:** Activo
+- **Cita asignada:** CITA-2025-003 (Consultorio 205)
+
+### 4. Especialidades Médicas
+
+**`esp1:Especialidad` - Cardiología**
+- Especialidad médica del corazón y sistema cardiovascular
+- Estado: Activo
+
+**`esp2:Especialidad` - Pediatría**
+- Atención médica infantil y adolescente
+- Estado: Activo
+
+**`esp3:Especialidad` - Traumatología**
+- Lesiones del sistema músculo-esquelético
+- Estado: Activo
+
+### 5. Consultorios
+
+**`cons1:Consultorio` - 101**
+- **Ubicación:** Piso 1, Edificio A
+- **Equipamiento:** Básico
+- **Estado:** Disponible
+- **Asignado a:** CITA-2025-001 (Cardiología)
+
+**`cons2:Consultorio` - 205**
+- **Ubicación:** Piso 2, Edificio A
+- **Equipamiento:** Completo
+- **Estado:** Disponible
+- **Asignado a:** CITA-2025-003 (Traumatología)
+
+**`cons3:Consultorio` - 310**
+- **Ubicación:** Piso 3, Edificio B
+- **Equipamiento:** Pediátrico
+- **Estado:** Disponible
+- **Asignado a:** CITA-2025-002 (Pediatría)
+
+### 6. Citas Médicas
+
+**`cita1:CitaMedica` - CITA-2025-001** ✅ CONFIRMADA
+- **Paciente:** Juan Pérez García
+- **Médico:** Dr. Carlos Ramírez Torres (Cardiología)
+- **Fecha:** 05/11/2025 a las 09:00
+- **Consultorio:** 101
+- **Motivo:** Control cardiológico rutinario
+- **Estado:** Confirmada
+- **Fecha de Registro:** 28/10/2025
+
+**`cita2:CitaMedica` - CITA-2025-002** ⏳ PENDIENTE
+- **Paciente:** María González López
+- **Médico:** Dra. Ana Martínez Sánchez (Pediatría)
+- **Fecha:** 06/11/2025 a las 10:00
+- **Consultorio:** 310
+- **Motivo:** Control pediátrico mensual
+- **Estado:** Pendiente
+- **Fecha de Registro:** 29/10/2025
+
+**`cita3:CitaMedica` - CITA-2025-003** ✔️ ATENDIDA
+- **Paciente:** Juan Pérez García
+- **Médico:** Dr. Luis Flores Díaz (Traumatología)
+- **Fecha:** 30/10/2025 a las 15:00
+- **Consultorio:** 205
+- **Motivo:** Dolor en rodilla derecha
+- **Estado:** Atendida
+- **Fecha de Registro:** 20/10/2025
+- **Resultado:** Diagnóstico y tratamiento registrados
+
+### 7. Historias Clínicas
+
+**`hc1:HistoriaClinica` - HC-2025-00123**
+- **Paciente:** Juan Pérez García
+- **Fecha de Apertura:** 15/01/2025
+- **Tipo Sanguíneo:** O+
+- **Alergias:** Penicilina
+- **Antecedentes:** Hipertensión arterial
+- **Citas Registradas:** 2 (CITA-2025-001, CITA-2025-003)
+
+**`hc2:HistoriaClinica` - HC-2025-00124**
+- **Paciente:** María González López
+- **Fecha de Apertura:** 20/03/2025
+- **Tipo Sanguíneo:** A+
+- **Alergias:** Ninguna
+- **Antecedentes:** Ninguno
+- **Citas Registradas:** 1 (CITA-2025-002)
+
+### 8. Diagnósticos (de cita atendida)
+
+**`diag1:Diagnostico` - I10**
+- **Descripción:** Hipertensión arterial controlada
+- **Fecha:** 30/10/2025
+- **Observaciones:** Continuar tratamiento
+- **Relacionado con:** Cita CITA-2025-003
+- **Tratamiento prescrito:** Enalapril 10mg
+
+**`diag2:Diagnostico` - M25.561**
+- **Descripción:** Dolor en rodilla derecha
+- **Fecha:** 30/10/2025
+- **Observaciones:** Requiere radiografía
+- **Relacionado con:** Cita CITA-2025-003
+- **Tratamiento prescrito:** Ibuprofeno 400mg
+
+### 9. Tratamientos
+
+**`trat1:Tratamiento`** (Para hipertensión)
+- **Descripción:** Enalapril 10mg cada 12 horas
+- **Fecha de Inicio:** 30/10/2025
+- **Duración:** 30 días
+- **Indicaciones:** Tomar después de las comidas
+- **Prescrito por:** Diagnóstico I10
+
+**`trat2:Tratamiento`** (Para dolor de rodilla)
+- **Descripción:** Ibuprofeno 400mg cada 8 horas
+- **Fecha de Inicio:** 30/10/2025
+- **Duración:** 7 días
+- **Indicaciones:** Tomar con alimentos, aplicar hielo local
+- **Prescrito por:** Diagnóstico M25.561
+
+## Relaciones Principales
+
+### Relaciones de Asociación
+
+1. **Sistema → Entidades**
+   - El sistema gestiona todos los pacientes, médicos y especialidades
+
+2. **Paciente → Historia Clínica** (1:1)
+   - Cada paciente tiene una historia clínica única
+   - `p1` → `hc1`, `p2` → `hc2`
+
+3. **Paciente → Citas** (1:N)
+   - Un paciente puede tener múltiples citas
+   - `p1` solicita `cita1` y `cita3`
+   - `p2` solicita `cita2`
+
+4. **Médico → Especialidad** (N:1)
+   - Cada médico está especializado en una especialidad
+   - `med1` especializado en `esp1` (Cardiología)
+   - `med2` especializado en `esp2` (Pediatría)
+   - `med3` especializado en `esp3` (Traumatología)
+
+5. **Médico → Horario de Atención** (1:N)
+   - Cada médico tiene horarios de atención específicos
+   - `med1` atiende en `h1` (Lunes 08:00-13:00)
+   - `med2` atiende en `h3` (Martes 09:00-12:00)
+   - `med3` atiende en `h2` (Miércoles 14:00-18:00)
+
+6. **Médico → Citas** (1:N)
+   - Cada médico atiende múltiples citas
+   - `med1` atiende `cita1`
+   - `med2` atiende `cita2`
+   - `med3` atiende `cita3`
+
+7. **Consultorio → Cita** (1:1 por sesión)
+   - Cada cita se asigna a un consultorio específico
+   - `cons1` asignado a `cita1`
+   - `cons2` asignado a `cita3`
+   - `cons3` asignado a `cita2`
+
+8. **Cita → Historia Clínica** (N:1)
+   - Todas las citas se registran en la historia clínica del paciente
+   - `cita1` y `cita3` se registran en `hc1`
+   - `cita2` se registra en `hc2`
+
+9. **Cita → Diagnóstico** (1:N)
+   - Una cita atendida puede generar uno o más diagnósticos
+   - `cita3` genera `diag1` y `diag2`
+
+10. **Diagnóstico → Tratamiento** (1:N)
+    - Cada diagnóstico puede prescribir uno o más tratamientos
+    - `diag1` prescribe `trat1`
+    - `diag2` prescribe `trat2`
+
+## Flujo de Ejemplo: Cita Completa (CITA-2025-003)
+
+Este diagrama ilustra el ciclo completo de una cita médica:
+
+1. **Registro del Paciente**
+   - Juan Pérez García (DNI: 72345678) se registra en el sistema
+   - Se crea su historia clínica (HC-2025-00123)
+
+2. **Solicitud de Cita**
+   - El paciente solicita cita para "Dolor en rodilla derecha"
+   - Fecha de registro: 20/10/2025
+   - Cita programada: 30/10/2025 a las 15:00
+
+3. **Asignación de Recursos**
+   - Médico asignado: Dr. Luis Flores Díaz (Traumatología)
+   - Consultorio asignado: 205 (Piso 2, Edificio A)
+
+4. **Atención de la Cita**
+   - Estado cambia a "Atendida"
+   - Se realizan diagnósticos:
+     - Hipertensión arterial controlada (I10)
+     - Dolor en rodilla derecha (M25.561)
+
+5. **Prescripción de Tratamientos**
+   - Tratamiento 1: Enalapril 10mg para hipertensión
+   - Tratamiento 2: Ibuprofeno 400mg para dolor
+
+6. **Registro en Historia Clínica**
+   - Toda la información se registra en HC-2025-00123
+   - El paciente puede consultar su historial completo
+
+## Notas Importantes
+
+### 📌 Nota 1: Paciente con Historial
+Juan Pérez García (paciente1) tiene antecedentes de hipertensión, lo cual se refleja en:
+- Su historia clínica (alergias: Penicilina, antecedentes: Hipertensión)
+- Su diagnóstico actual (I10: Hipertensión arterial controlada)
+- Su tratamiento continuo (Enalapril)
+
+### 📌 Nota 2: Cita Atendida Completa
+La CITA-2025-003 muestra el flujo completo:
+- Paciente → Cita → Médico → Consultorio
+- Cita → Diagnóstico → Tratamiento
+- Cita → Historia Clínica (registro permanente)
+
+### 📌 Nota 3: Estados de Citas
+El diagrama muestra los tres estados posibles:
+- **Confirmada** (cita1): Agendada y confirmada
+- **Pendiente** (cita2): Agendada pero sin confirmar
+- **Atendida** (cita3): Completada con diagnóstico
+
+### 📌 Nota 4: Sistema Centralizado
+El objeto `:Sistema` 
+- gestiona todas las entidades y sus relaciones, asegurando la integridad y consistencia de los datos.
+---
+## Validación del Modelo
+
+Este diagrama valida que el modelo de datos puede:
+
+✅ Gestionar múltiples pacientes simultáneamente  
+✅ Registrar diferentes especialidades médicas  
+✅ Asignar médicos a especialidades específicas  
+✅ Programar citas en diferentes consultorios  
+✅ Mantener historiales clínicos completos  
+✅ Registrar diagnósticos y tratamientos  
+✅ Gestionar diferentes estados de citas  
+✅ Relacionar toda la información de forma coherente  
+## Casos de Uso Representados
+
+1. **UC-01:** Registro de Paciente (paciente1, paciente2)
+2. **UC-02:** Solicitud de Cita (cita1, cita2, cita3)
+3. **UC-03:** Asignación de Recursos (consultorios, médicos)
+4. **UC-04:** Atención de Cita (cita3)
+5. **UC-05:** Registro de Diagnóstico (diag1, diag2)
+6. **UC-06:** Prescripción de Tratamiento (trat1, trat2)
+7. **UC-07:** Consulta de Historia Clínica (hc1, hc2)
+
+## Conclusiones
+
+El diagrama de objetos demuestra que:
+
+1. El modelo de datos es **completo y consistente**
+2. Las relaciones entre entidades son **claras y correctas**
+3. El sistema puede gestionar **escenarios reales complejos**
+4. La información se mantiene **integrada y coherente**
+5. El flujo de trabajo médico está **correctamente modelado**
+
+Este diagrama complementa el diagrama de clases al mostrar cómo funcionan las instancias en tiempo de ejecución y valida que el diseño puede soportar las operaciones del sistema de forma eficiente.
+
+---
+
+**Figura 4.8:** Diagrama de Objetos del Sistema de Reserva de Consultas Médicas  
+**Herramienta:** PlantUML  
+**Formato:** PNG, 300 DPI  
+**Fuente:** Elaboración propia
 
 ---
 

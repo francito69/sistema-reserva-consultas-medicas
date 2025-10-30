@@ -1,0 +1,341 @@
+@startuml diagrama-clases
+!define LIGHTORANGE #FFE5CC
+!define LIGHTBLUE #E3F2FD
+!define LIGHTGREEN #E8F5E9
+!define LIGHTYELLOW #FFF9C4
+!define LIGHTPINK #FCE4EC
+!define LIGHTPURPLE #F3E5F5
+
+skinparam backgroundColor white
+skinparam classBackgroundColor LIGHTBLUE
+skinparam classBorderColor #333333
+skinparam arrowColor #666666
+skinparam packageBackgroundColor #F5F5F5
+skinparam packageBorderColor #999999
+
+title Diagrama de Clases - Sistema de Reserva de Consultas Médicas Externas
+
+' ===== CLASE SISTEMA =====
+class Sistema {
+  - nombre: String
+  - version: String
+  - fechaActual: Date
+  + iniciarSistema(): void
+  + cerrarSistema(): void
+  + obtenerFechaActual(): Date
+}
+
+' ===== PACKAGE USUARIOS =====
+package "Gestión de Usuarios" {
+  
+  abstract class Usuario {
+    # dni: String
+    # nombre: String
+    # apellidos: String
+    # fechaNacimiento: Date
+    # sexo: char
+    # email: String
+    # telefono: String
+    # direccion: String
+    # fechaRegistro: Date
+    + {abstract} iniciarSesion(usuario: String, password: String): boolean
+    + actualizarDatos(): void
+    + validarDatos(): boolean
+    + obtenerNombreCompleto(): String
+  }
+
+  class Paciente {
+    - numeroHistoriaClinica: String
+    - estadoCuenta: String
+    - fotoPerfil: Image
+    + registrarse(): boolean
+    + solicitarCita(fecha: Date, especialidad: Especialidad): CitaMedica
+    + cancelarCita(cita: CitaMedica): boolean
+    + consultarHistorial(): HistoriaClinica
+    + actualizarPerfil(): void
+    + verificarCuenta(email: String): boolean
+  }
+
+  class Medico {
+    - cmp: String
+    - especialidadId: String
+    - añosExperiencia: int
+    - estadoLaboral: String
+    - curriculum: String
+    + registrarHorario(horario: HorarioAtencion): void
+    + consultarAgenda(fecha: Date): List<CitaMedica>
+    + atenderCita(cita: CitaMedica): void
+    + registrarDiagnostico(cita: CitaMedica, diag: Diagnostico): void
+    + prescribirTratamiento(diagnostico: Diagnostico): Tratamiento
+    + modificarHorario(horario: HorarioAtencion): void
+  }
+
+  class Administrador {
+    - rol: String
+    - permisos: List<String>
+    - nivelAcceso: int
+    + gestionarUsuarios(): void
+    + configurarSistema(): void
+    + generarReportes(): void
+    + asignarConsultorios(): void
+    + administrarEspecialidades(): void
+  }
+}
+
+' ===== PACKAGE CITAS MÉDICAS =====
+package "Gestión de Citas" {
+  
+  class CitaMedica {
+    - numeroCita: String
+    - fechaCita: Date
+    - horaCita: Time
+    - motivo: String
+    - estadoCita: String
+    - observaciones: String
+    - fechaRegistro: Date
+    - costoConsulta: double
+    + confirmarCita(): void
+    + cancelarCita(motivo: String): boolean
+    + reprogramarCita(nuevaFecha: Date): boolean
+    + marcarComoAtendida(): void
+    + generarComprobante(): String
+    + enviarRecordatorio(): void
+  }
+
+  class HorarioAtencion {
+    - id: int
+    - diaSemana: String
+    - horaInicio: Time
+    - horaFin: Time
+    - duracionCita: int
+    - maxCitas: int
+    - estado: String
+    + validarHorario(): boolean
+    + calcularDisponibilidad(): int
+    + verificarConflictos(): boolean
+    + obtenerCitasDisponibles(): List<Time>
+  }
+
+  class Consultorio {
+    - numero: String
+    - piso: String
+    - edificio: String
+    - capacidad: int
+    - equipamiento: String
+    - estado: String
+    + verificarDisponibilidad(fecha: Date, hora: Time): boolean
+    + reservarConsultorio(): void
+    + liberarConsultorio(): void
+    + registrarMantenimiento(): void
+  }
+}
+
+' ===== PACKAGE ESPECIALIDADES =====
+package "Gestión de Especialidades" {
+  
+  class Especialidad {
+    - id: String
+    - nombre: String
+    - descripcion: String
+    - activo: boolean
+    - costoBase: double
+    + obtenerMedicos(): List<Medico>
+    + activar(): void
+    + desactivar(): void
+  }
+}
+
+' ===== PACKAGE HISTORIA CLÍNICA =====
+package "Gestión de Historia Clínica" {
+  
+  class HistoriaClinica {
+    - numeroHistoria: String
+    - fechaApertura: Date
+    - tipoSangre: String
+    - alergias: String
+    - antecedentes: String
+    - observacionesGenerales: String
+    + agregarCita(cita: CitaMedica): void
+    + consultarHistorial(): List<CitaMedica>
+    + generarResumen(): String
+    + exportarPDF(): File
+  }
+
+  class Diagnostico {
+    - id: int
+    - codigo: String
+    - descripcion: String
+    - fecha: Date
+    - observaciones: String
+    - gravedad: String
+    + registrarDiagnostico(): void
+    + actualizarDiagnostico(): void
+    + vincularTratamiento(tratamiento: Tratamiento): void
+  }
+
+  class Tratamiento {
+    - id: int
+    - descripcion: String
+    - fechaInicio: Date
+    - fechaFin: Date
+    - duracion: String
+    - indicaciones: String
+    - medicamentos: String
+    + prescribirTratamiento(): void
+    + modificarTratamiento(): void
+    + finalizarTratamiento(): void
+    + generarReceta(): String
+  }
+
+  class ExamenMedico {
+    - id: int
+    - tipoExamen: String
+    - descripcion: String
+    - fechaSolicitud: Date
+    - fechaResultado: Date
+    - resultado: String
+    - archivoAdjunto: File
+    + solicitarExamen(): void
+    + registrarResultado(resultado: String): void
+    + adjuntarArchivo(archivo: File): void
+  }
+}
+
+' ===== PACKAGE FACTURACIÓN =====
+package "Gestión de Facturación" {
+  
+  class Factura {
+    - numeroFactura: String
+    - fecha: Date
+    - monto: double
+    - igv: double
+    - total: double
+    - estadoPago: String
+    - metodoPago: String
+    + generarFactura(): void
+    + calcularTotal(): double
+    + registrarPago(): void
+    + anularFactura(): void
+    + imprimirFactura(): File
+  }
+
+  class Pago {
+    - idPago: int
+    - monto: double
+    - fechaPago: Date
+    - metodoPago: String
+    - numeroTransaccion: String
+    - comprobante: String
+    + procesarPago(): boolean
+    + verificarPago(): boolean
+    + generarComprobante(): String
+  }
+}
+
+' ===== PACKAGE NOTIFICACIONES =====
+package "Sistema de Notificaciones" {
+  
+  class Notificacion {
+    - id: int
+    - tipo: String
+    - mensaje: String
+    - fecha: Date
+    - leida: boolean
+    - prioridad: String
+    + enviarNotificacion(): void
+    + marcarComoLeida(): void
+    + programarEnvio(fecha: Date): void
+  }
+
+  class Email {
+    - asunto: String
+    - cuerpo: String
+    - destinatario: String
+    - adjuntos: List<File>
+    + enviarEmail(): boolean
+    + agregarAdjunto(archivo: File): void
+  }
+
+  class SMS {
+    - numeroDestino: String
+    - texto: String
+    - estadoEnvio: String
+    + enviarSMS(): boolean
+  }
+}
+
+' ===== RELACIONES =====
+
+' Sistema con paquetes principales
+Sistema "1" -- "*" Usuario : gestiona
+Sistema "1" -- "*" CitaMedica : administra
+Sistema "1" -- "*" Especialidad : contiene
+
+' Herencia de Usuario
+Usuario <|-- Paciente
+Usuario <|-- Medico
+Usuario <|-- Administrador
+
+' Paciente y sus relaciones
+Paciente "1" -- "1" HistoriaClinica : tiene
+Paciente "1" -- "*" CitaMedica : solicita
+Paciente "1" -- "*" Factura : genera
+
+' Médico y sus relaciones
+Medico "*" -- "1" Especialidad : especializado en
+Medico "1" -- "*" HorarioAtencion : define
+Medico "1" -- "*" CitaMedica : atiende
+
+' Cita Médica y sus relaciones
+CitaMedica "*" -- "1" Consultorio : asignada a
+CitaMedica "*" -- "1" HistoriaClinica : registrada en
+CitaMedica "1" -- "*" Diagnostico : genera
+CitaMedica "1" -- "0..1" Factura : factura
+
+' Historia Clínica y diagnósticos
+HistoriaClinica "1" -- "*" Diagnostico : contiene
+HistoriaClinica "1" -- "*" ExamenMedico : incluye
+
+' Diagnóstico y Tratamiento
+Diagnostico "1" -- "*" Tratamiento : prescribe
+
+' Facturación
+Factura "1" -- "1..*" Pago : procesada con
+
+' Notificaciones
+CitaMedica "1" -- "*" Notificacion : genera
+Notificacion <|-- Email
+Notificacion <|-- SMS
+Paciente "1" -- "*" Notificacion : recibe
+Medico "1" -- "*" Notificacion : recibe
+
+' Notas explicativas
+note top of Sistema
+  Clase principal que gestiona
+  todas las entidades del sistema
+end note
+
+note right of Usuario
+  Clase abstracta base
+  para todos los tipos de usuarios
+end note
+
+note bottom of CitaMedica
+  Estados posibles:
+  - Pendiente
+  - Confirmada
+  - Atendida
+  - Cancelada
+end note
+
+note left of HistoriaClinica
+  Almacena todo el historial
+  médico del paciente
+end note
+
+note bottom of Diagnostico
+  Usa códigos CIE-10
+  para diagnósticos estándar
+end note
+
+@enduml
