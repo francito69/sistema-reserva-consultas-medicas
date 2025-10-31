@@ -1,24 +1,233 @@
-# Compiled class file
+# =============================================
+# .gitignore
+# Sistema de Reserva de Consultas Médicas
+# =============================================
+
+# =============================================
+# JAVA / MAVEN / SPRING BOOT
+# =============================================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# =============================================
+# ARCHIVOS COMPILADOS
+# =============================================
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
-*.nar
 *.ear
+*.log
+*.nar
+
+# =============================================
+# GRADLE (si decides usar Gradle)
+# =============================================
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# =============================================
+# SPRING BOOT
+# =============================================
+spring-boot-*.log
+
+# =============================================
+# LOGS
+# =============================================
+logs/
+*.log
+*.log.*
+
+# =============================================
+# IDEs
+# =============================================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+
+# Eclipse
+.classpath
+.project
+.settings/
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+.history/
+
+# =============================================
+# SISTEMA OPERATIVO
+# =============================================
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================
+# ARCHIVOS DE CONFIGURACIÓN SENSIBLES
+# =============================================
+# ¡NUNCA subir archivos con contraseñas!
+application-prod.properties
+application-local.properties
+application-secrets.properties
+.env
+.env.local
+.env.*.local
+
+# Archivos de configuración con credenciales
+**/resources/application-*.properties
+!**/resources/application.properties.example
+
+# =============================================
+# BASE DE DATOS
+# =============================================
+# Archivos de base de datos local
+*.db
+*.sqlite
+*.sqlite3
+
+# Backups de base de datos con datos sensibles
+*_backup.sql
+backup_*.sql
+
+# =============================================
+# NODE / NPM (si usas Node para frontend)
+# =============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log*
+
+# =============================================
+# DEPENDENCIAS
+# =============================================
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# =============================================
+# ARCHIVOS TEMPORALES
+# =============================================
+*.tmp
+*.temp
+*.cache
+.cache/
+
+# =============================================
+# DOCUMENTACIÓN GENERADA
+# =============================================
+/docs/generated/
+/javadoc/
+
+# =============================================
+# TESTING
+# =============================================
+/test-output/
+/coverage/
+*.lcov
+.nyc_output
+
+# =============================================
+# ARCHIVOS GRANDES
+# =============================================
+# Evitar subir archivos muy pesados
 *.zip
 *.tar.gz
 *.rar
+# Excepto los releases oficiales si los necesitas
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# =============================================
+# OTROS
+# =============================================
+.factorypath
+.springBeans
+.sts4-cache
+*.pid
+*.seed
+*.pid.lock
+
+# =============================================
+# ARCHIVOS ESPECÍFICOS DEL PROYECTO
+# =============================================
+# Agregar aquí archivos específicos que no quieras en Git
+
+# Archivos de usuario de PostgreSQL con contraseñas
+pgpass.conf
+.pgpass
+
+# Certificados y llaves
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+
+# =============================================
+# MANTENER ESTRUCTURA DE CARPETAS VACÍAS
+# =============================================
+# Para mantener carpetas vacías en Git, crea archivos .gitkeep:
+# !**/.gitkeep
