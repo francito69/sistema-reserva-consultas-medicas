@@ -965,9 +965,1264 @@ SELECT 'Consultorio' AS tabla, COUNT(*) AS registros FROM consultorio;
 
 ---
 
-## 6.6. Resumen de Implementación
+### 6.5.2. Script 10: Insertar Datos de Prueba
 
-### 6.6.1. Checklist de Implementación
+**Ubicación:** `database/dml/10_insert_test_data.sql`
+
+**Propósito:** Insertar datos de prueba para desarrollo y testing.
+
+```sql
+-- ============================================
+-- Script: 10_insert_test_data.sql
+-- Descripción: Insertar datos de prueba
+-- Autor: [francito69]
+-- Fecha: 2025-10-30
+-- ============================================
+
+BEGIN;
+
+-- ===========================================
+-- 1. INSERTAR USUARIOS
+-- ===========================================
+
+-- Usuarios Administrador
+INSERT INTO usuario (nombre_usuario, contraseña, email, rol, estado) VALUES
+('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'admin@hospital.com', 'ADMIN', 'ACTIVO');
+-- Contraseña: admin123
+
+-- Usuarios Médicos
+INSERT INTO usuario (nombre_usuario, contraseña, email, rol, estado) VALUES
+('dr.garcia', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'garcia@hospital.com', 'MEDICO', 'ACTIVO'),
+('dr.lopez', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'lopez@hospital.com', 'MEDICO', 'ACTIVO'),
+('dr.martinez', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'martinez@hospital.com', 'MEDICO', 'ACTIVO'),
+('dra.fernandez', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'fernandez@hospital.com', 'MEDICO', 'ACTIVO');
+
+-- Usuarios Pacientes
+INSERT INTO usuario (nombre_usuario, contraseña, email, rol, estado) VALUES
+('jperes', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'juan.perez@email.com', 'PACIENTE', 'ACTIVO'),
+('mrodriguez', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'maria.rodriguez@email.com', 'PACIENTE', 'ACTIVO'),
+('cgonzalez', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'carlos.gonzalez@email.com', 'PACIENTE', 'ACTIVO'),
+('asilva', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ana.silva@email.com', 'PACIENTE', 'ACTIVO'),
+('ltorres', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'luis.torres@email.com', 'PACIENTE', 'ACTIVO');
+
+-- ===========================================
+-- 2. INSERTAR MÉDICOS
+-- ===========================================
+
+INSERT INTO medico (dni, nombres, apellido_paterno, apellido_materno, numero_colegiatura, email, telefono, id_usuario) VALUES
+('45678901', 'Roberto Carlos', 'García', 'Mendoza', 'CMP-12345', 'garcia@hospital.com', '987654321', 2),
+('45678902', 'Patricia Elena', 'López', 'Vargas', 'CMP-12346', 'lopez@hospital.com', '987654322', 3),
+('45678903', 'Miguel Ángel', 'Martínez', 'Ramos', 'CMP-12347', 'martinez@hospital.com', '987654323', 4),
+('45678904', 'Carmen Rosa', 'Fernández', 'Castro', 'CMP-12348', 'fernandez@hospital.com', '987654324', 5);
+
+-- ===========================================
+-- 3. ASIGNAR ESPECIALIDADES A MÉDICOS
+-- ===========================================
+
+-- Dr. García - Cardiología y Medicina General
+INSERT INTO medico_especialidad (id_medico, id_especialidad, fecha_certificacion, institucion_certificadora) VALUES
+(1, 1, '2020-03-15', 'Colegio Médico del Perú'),
+(1, 5, '2018-06-20', 'Universidad Nacional Mayor de San Marcos');
+
+-- Dra. López - Pediatría
+INSERT INTO medico_especialidad (id_medico, id_especialidad, fecha_certificacion, institucion_certificadora) VALUES
+(2, 2, '2019-08-10', 'Instituto Nacional de Salud del Niño');
+
+-- Dr. Martínez - Traumatología
+INSERT INTO medico_especialidad (id_medico, id_especialidad, fecha_certificacion, institucion_certificadora) VALUES
+(3, 4, '2021-01-25', 'Hospital Nacional Dos de Mayo');
+
+-- Dra. Fernández - Ginecología y Medicina General
+INSERT INTO medico_especialidad (id_medico, id_especialidad, fecha_certificacion, institucion_certificadora) VALUES
+(4, 6, '2020-11-30', 'Instituto Nacional Materno Perinatal'),
+(4, 5, '2017-05-15', 'Universidad Peruana Cayetano Heredia');
+
+-- ===========================================
+-- 4. INSERTAR HORARIOS DE ATENCIÓN
+-- ===========================================
+
+-- Dr. García - Cardiología (Lunes, Miércoles, Viernes)
+INSERT INTO horario_atencion (id_medico, id_consultorio, id_especialidad, dia_semana, hora_inicio, hora_fin, duracion_cita) VALUES
+(1, 1, 1, 'LUNES', '08:00', '13:00', 30),
+(1, 1, 1, 'MIERCOLES', '08:00', '13:00', 30),
+(1, 1, 1, 'VIERNES', '08:00', '13:00', 30);
+
+-- Dr. García - Medicina General (Martes, Jueves)
+INSERT INTO horario_atencion (id_medico, id_consultorio, id_especialidad, dia_semana, hora_inicio, hora_fin, duracion_cita) VALUES
+(1, 3, 5, 'MARTES', '14:00', '18:00', 20),
+(1, 3, 5, 'JUEVES', '14:00', '18:00', 20);
+
+-- Dra. López - Pediatría (Lunes a Viernes por la mañana)
+INSERT INTO horario_atencion (id_medico, id_consultorio, id_especialidad, dia_semana, hora_inicio, hora_fin, duracion_cita) VALUES
+(2, 2, 2, 'LUNES', '09:00', '13:00', 25),
+(2, 2, 2, 'MARTES', '09:00', '13:00', 25),
+(2, 2, 2, 'MIERCOLES', '09:00', '13:00', 25),
+(2, 2, 2, 'JUEVES', '09:00', '13:00', 25),
+(2, 2, 2, 'VIERNES', '09:00', '13:00', 25);
+
+-- Dr. Martínez - Traumatología (Martes, Jueves, Sábado)
+INSERT INTO horario_atencion (id_medico, id_consultorio, id_especialidad, dia_semana, hora_inicio, hora_fin, duracion_cita) VALUES
+(3, 5, 4, 'MARTES', '08:00', '12:00', 30),
+(3, 5, 4, 'JUEVES', '08:00', '12:00', 30),
+(3, 5, 4, 'SABADO', '08:00', '12:00', 30);
+
+-- Dra. Fernández - Ginecología (Lunes, Miércoles, Viernes)
+INSERT INTO horario_atencion (id_medico, id_consultorio, id_especialidad, dia_semana, hora_inicio, hora_fin, duracion_cita) VALUES
+(4, 7, 6, 'LUNES', '15:00', '19:00', 40),
+(4, 7, 6, 'MIERCOLES', '15:00', '19:00', 40),
+(4, 7, 6, 'VIERNES', '15:00', '19:00', 40);
+
+-- ===========================================
+-- 5. INSERTAR PACIENTES
+-- ===========================================
+
+INSERT INTO paciente (dni, nombres, apellido_paterno, apellido_materno, fecha_nacimiento, genero, direccion, email, id_usuario) VALUES
+('70123456', 'Juan Carlos', 'Pérez', 'García', '1990-05-15', 'M', 'Av. Arequipa 1234, Lima', 'juan.perez@email.com', 6),
+('70123457', 'María Isabel', 'Rodríguez', 'López', '1985-08-22', 'F', 'Jr. Huancayo 567, Lima', 'maria.rodriguez@email.com', 7),
+('70123458', 'Carlos Alberto', 'González', 'Martínez', '1978-12-10', 'M', 'Av. Brasil 890, Lima', 'carlos.gonzalez@email.com', 8),
+('70123459', 'Ana Lucía', 'Silva', 'Fernández', '1995-03-25', 'F', 'Calle Los Olivos 234, Lima', 'ana.silva@email.com', 9),
+('70123460', 'Luis Fernando', 'Torres', 'Ramírez', '1982-07-18', 'M', 'Av. Colonial 456, Lima', 'luis.torres@email.com', 10);
+
+-- ===========================================
+-- 6. INSERTAR TELÉFONOS DE PACIENTES
+-- ===========================================
+
+INSERT INTO paciente_telefono (id_paciente, numero, tipo, es_principal) VALUES
+(1, '987654321', 'MOVIL', true),
+(1, '014567890', 'FIJO', false),
+(2, '987654322', 'MOVIL', true),
+(3, '987654323', 'MOVIL', true),
+(3, '014567891', 'TRABAJO', false),
+(4, '987654324', 'MOVIL', true),
+(5, '987654325', 'MOVIL', true);
+
+-- ===========================================
+-- 7. INSERTAR CITAS DE PRUEBA
+-- ===========================================
+
+-- Citas futuras (PENDIENTE/CONFIRMADA)
+INSERT INTO cita (
+    codigo_cita, id_paciente, id_medico, id_consultorio, id_especialidad, 
+    id_estado, fecha_cita, hora_inicio, hora_fin, motivo_consulta
+) VALUES
+('CITA-2025-0001', 1, 1, 1, 1, 2, CURRENT_DATE + INTERVAL '5 days', '08:00', '08:30', 'Control de presión arterial y revisión general del corazón'),
+('CITA-2025-0002', 2, 2, 2, 2, 2, CURRENT_DATE + INTERVAL '7 days', '09:00', '09:25', 'Control de crecimiento y desarrollo del niño de 3 años'),
+('CITA-2025-0003', 3, 3, 5, 4, 1, CURRENT_DATE + INTERVAL '10 days', '08:30', '09:00', 'Dolor en rodilla derecha después de practicar deporte'),
+('CITA-2025-0004', 4, 4, 7, 6, 1, CURRENT_DATE + INTERVAL '12 days', '15:00', '15:40', 'Control ginecológico anual de rutina y papanicolau'),
+('CITA-2025-0005', 5, 1, 3, 5, 2, CURRENT_DATE + INTERVAL '3 days', '14:00', '14:20', 'Consulta general por gripe y malestar general');
+
+-- Citas pasadas (ATENDIDA)
+INSERT INTO cita (
+    codigo_cita, id_paciente, id_medico, id_consultorio, id_especialidad, 
+    id_estado, fecha_cita, hora_inicio, hora_fin, motivo_consulta, observaciones
+) VALUES
+('CITA-2025-0006', 1, 1, 1, 1, 3, CURRENT_DATE - INTERVAL '15 days', '08:00', '08:30', 
+ 'Dolor en el pecho y palpitaciones', 
+ 'Paciente diagnosticado con arritmia leve. Se recetó medicamento y se programa seguimiento.'),
+('CITA-2025-0007', 2, 2, 2, 2, 3, CURRENT_DATE - INTERVAL '30 days', '10:00', '10:25', 
+ 'Vacunación y control de peso del niño', 
+ 'Niño con desarrollo normal. Se aplicaron vacunas correspondientes.'),
+('CITA-2025-0008', 3, 3, 5, 4, 3, CURRENT_DATE - INTERVAL '45 days', '09:00', '09:30', 
+ 'Fractura de muñeca izquierda', 
+ 'Se colocó yeso. Control en 4 semanas para evaluar consolidación.');
+
+-- Citas canceladas
+INSERT INTO cita (
+    codigo_cita, id_paciente, id_medico, id_consultorio, id_especialidad, 
+    id_estado, fecha_cita, hora_inicio, hora_fin, motivo_consulta, 
+    motivo_cancelacion, cancelado_por
+) VALUES
+('CITA-2025-0009', 4, 4, 7, 6, 4, CURRENT_DATE + INTERVAL '2 days', '16:00', '16:40', 
+ 'Control prenatal del primer trimestre', 
+ 'Paciente tuvo compromiso laboral urgente', 'PACIENTE'),
+('CITA-2025-0010', 5, 1, 1, 1, 4, CURRENT_DATE + INTERVAL '4 days', '09:00', '09:30', 
+ 'Evaluación cardiológica por antecedentes familiares', 
+ 'Médico tuvo emergencia familiar', 'MEDICO');
+
+-- Citas con inasistencia
+INSERT INTO cita (
+    codigo_cita, id_paciente, id_medico, id_consultorio, id_especialidad, 
+    id_estado, fecha_cita, hora_inicio, hora_fin, motivo_consulta
+) VALUES
+('CITA-2025-0011', 3, 2, 2, 2, 5, CURRENT_DATE - INTERVAL '7 days', '11:00', '11:25', 
+ 'Control pediátrico del bebé de 6 meses');
+
+COMMIT;
+
+-- ===========================================
+-- 8. VERIFICAR DATOS INSERTADOS
+-- ===========================================
+
+SELECT 'Usuarios' AS tabla, COUNT(*) AS total FROM usuario
+UNION ALL
+SELECT 'Médicos' AS tabla, COUNT(*) AS total FROM medico
+UNION ALL
+SELECT 'Pacientes' AS tabla, COUNT(*) AS total FROM paciente
+UNION ALL
+SELECT 'Especialidades Médicas' AS tabla, COUNT(*) AS total FROM medico_especialidad
+UNION ALL
+SELECT 'Horarios de Atención' AS tabla, COUNT(*) AS total FROM horario_atencion
+UNION ALL
+SELECT 'Teléfonos' AS tabla, COUNT(*) AS total FROM paciente_telefono
+UNION ALL
+SELECT 'Citas' AS tabla, COUNT(*) AS total FROM cita
+UNION ALL
+SELECT 'Notificaciones' AS tabla, COUNT(*) AS total FROM notificacion;
+
+-- Mostrar distribución de citas por estado
+SELECT 
+    ec.nombre AS estado,
+    COUNT(*) AS cantidad,
+    ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM cita), 2) AS porcentaje
+FROM cita c
+INNER JOIN estado_cita ec ON c.id_estado = ec.id_estado
+GROUP BY ec.nombre, ec.id_estado
+ORDER BY ec.id_estado;
+
+PRINT 'Datos de prueba insertados exitosamente!';
+```
+
+---
+
+## 6.6. Scripts DQL (Data Query Language)
+
+### 6.6.1. Script 11: Consultas Básicas
+
+**Ubicación:** `database/dql/11_basic_queries.sql`
+
+**Propósito:** Consultas básicas para verificación y operaciones comunes.
+
+```sql
+-- ============================================
+-- Script: 11_basic_queries.sql
+-- Descripción: Consultas básicas del sistema
+-- Autor: [francito69]
+-- Fecha: 2025-10-30
+-- ============================================
+
+-- ===========================================
+-- 1. CONSULTAS DE VERIFICACIÓN
+-- ===========================================
+
+-- Listar todas las tablas con cantidad de registros
+SELECT 
+    schemaname AS esquema,
+    tablename AS tabla,
+    (SELECT COUNT(*) FROM pg_tables WHERE schemaname = 'public') AS total_tablas
+FROM pg_tables 
+WHERE schemaname = 'public'
+ORDER BY tablename;
+
+-- Ver tamaño de cada tabla
+SELECT 
+    tablename AS tabla,
+    pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) AS tamaño_total,
+    pg_size_pretty(pg_relation_size(schemaname||'.'||tablename)) AS tamaño_datos,
+    pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename) - 
+                   pg_relation_size(schemaname||'.'||tablename)) AS tamaño_indices
+FROM pg_tables 
+WHERE schemaname = 'public'
+ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+
+-- ===========================================
+-- 2. CONSULTAS DE USUARIOS
+-- ===========================================
+
+-- Listar todos los usuarios
+SELECT 
+    id_usuario,
+    nombre_usuario,
+    email,
+    rol,
+    estado,
+    TO_CHAR(fecha_creacion, 'DD/MM/YYYY HH24:MI') AS fecha_creacion
+FROM usuario
+ORDER BY rol, nombre_usuario;
+
+-- Contar usuarios por rol
+SELECT 
+    rol,
+    COUNT(*) AS cantidad,
+    COUNT(CASE WHEN estado = 'ACTIVO' THEN 1 END) AS activos,
+    COUNT(CASE WHEN estado = 'INACTIVO' THEN 1 END) AS inactivos
+FROM usuario
+GROUP BY rol
+ORDER BY rol;
+
+-- ===========================================
+-- 3. CONSULTAS DE PACIENTES
+-- ===========================================
+
+-- Listar todos los pacientes
+SELECT 
+    p.id_paciente,
+    p.dni,
+    CONCAT(p.nombres, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre_completo,
+    p.genero,
+    fn_calcular_edad(p.fecha_nacimiento) AS edad,
+    p.email,
+    p.estado
+FROM paciente p
+ORDER BY p.apellido_paterno, p.apellido_materno, p.nombres;
+
+-- Buscar paciente por DNI
+SELECT 
+    p.id_paciente,
+    p.dni,
+    CONCAT(p.nombres, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre_completo,
+    TO_CHAR(p.fecha_nacimiento, 'DD/MM/YYYY') AS fecha_nacimiento,
+    fn_calcular_edad(p.fecha_nacimiento) AS edad,
+    p.genero,
+    p.direccion,
+    p.email,
+    u.nombre_usuario
+FROM paciente p
+INNER JOIN usuario u ON p.id_usuario = u.id_usuario
+WHERE p.dni = '70123456';
+
+-- Listar teléfonos de un paciente
+SELECT 
+    pt.tipo,
+    pt.numero,
+    pt.es_principal
+FROM paciente_telefono pt
+WHERE pt.id_paciente = 1
+ORDER BY pt.es_principal DESC, pt.tipo;
+
+-- ===========================================
+-- 4. CONSULTAS DE MÉDICOS
+-- ===========================================
+
+-- Listar todos los médicos
+SELECT 
+    m.id_medico,
+    m.numero_colegiatura,
+    CONCAT(m.nombres, ' ', m.apellido_paterno, ' ', m.apellido_materno) AS nombre_completo,
+    m.email,
+    m.telefono,
+    m.estado
+FROM medico m
+ORDER BY m.apellido_paterno, m.apellido_materno;
+
+-- Buscar médico por número de colegiatura
+SELECT 
+    m.id_medico,
+    m.numero_colegiatura,
+    CONCAT(m.nombres, ' ', m.apellido_paterno, ' ', m.apellido_materno) AS nombre_completo,
+    m.dni,
+    m.email,
+    m.telefono
+FROM medico m
+WHERE m.numero_colegiatura = 'CMP-12345';
+
+-- ===========================================
+-- 5. CONSULTAS DE ESPECIALIDADES
+-- ===========================================
+
+-- Listar todas las especialidades
+SELECT 
+    id_especialidad,
+    codigo,
+    nombre,
+    descripcion,
+    estado
+FROM especialidad
+ORDER BY nombre;
+
+-- Especialidades de un médico específico
+SELECT 
+    e.codigo,
+    e.nombre,
+    me.fecha_certificacion,
+    me.institucion_certificadora
+FROM medico_especialidad me
+INNER JOIN especialidad e ON me.id_especialidad = e.id_especialidad
+WHERE me.id_medico = 1
+ORDER BY e.nombre;
+
+-- ===========================================
+-- 6. CONSULTAS DE CONSULTORIOS
+-- ===========================================
+
+-- Listar todos los consultorios
+SELECT 
+    codigo,
+    nombre,
+    piso,
+    capacidad,
+    equipamiento,
+    estado
+FROM consultorio
+ORDER BY piso, codigo;
+
+-- Consultorios por piso
+SELECT 
+    piso,
+    COUNT(*) AS cantidad_consultorios,
+    COUNT(CASE WHEN estado = 'ACTIVO' THEN 1 END) AS activos
+FROM consultorio
+GROUP BY piso
+ORDER BY piso;
+
+-- ===========================================
+-- 7. CONSULTAS DE HORARIOS
+-- ===========================================
+
+-- Horarios de atención de un médico
+SELECT 
+    ha.dia_semana,
+    TO_CHAR(ha.hora_inicio, 'HH24:MI') AS hora_inicio,
+    TO_CHAR(ha.hora_fin, 'HH24:MI') AS hora_fin,
+    ha.duracion_cita,
+    e.nombre AS especialidad,
+    c.nombre AS consultorio,
+    c.piso
+FROM horario_atencion ha
+INNER JOIN especialidad e ON ha.id_especialidad = e.id_especialidad
+INNER JOIN consultorio c ON ha.id_consultorio = c.id_consultorio
+WHERE ha.id_medico = 1 AND ha.estado = 'ACTIVO'
+ORDER BY 
+    CASE ha.dia_semana
+        WHEN 'LUNES' THEN 1
+        WHEN 'MARTES' THEN 2
+        WHEN 'MIERCOLES' THEN 3
+        WHEN 'JUEVES' THEN 4
+        WHEN 'VIERNES' THEN 5
+        WHEN 'SABADO' THEN 6
+    END,
+    ha.hora_inicio;
+
+-- Todos los horarios disponibles hoy
+SELECT 
+    CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+    e.nombre AS especialidad,
+    c.nombre AS consultorio,
+    TO_CHAR(ha.hora_inicio, 'HH24:MI') || ' - ' || TO_CHAR(ha.hora_fin, 'HH24:MI') AS horario
+FROM horario_atencion ha
+INNER JOIN medico m ON ha.id_medico = m.id_medico
+INNER JOIN especialidad e ON ha.id_especialidad = e.id_especialidad
+INNER JOIN consultorio c ON ha.id_consultorio = c.id_consultorio
+WHERE ha.dia_semana = TO_CHAR(CURRENT_DATE, 'DAY', 'es_PE.UTF-8')
+  AND ha.estado = 'ACTIVO'
+  AND m.estado = 'ACTIVO'
+ORDER BY ha.hora_inicio, m.apellido_paterno;
+
+-- ===========================================
+-- 8. CONSULTAS DE CITAS
+-- ===========================================
+
+-- Listar todas las citas con información básica
+SELECT 
+    c.codigo_cita,
+    TO_CHAR(c.fecha_cita, 'DD/MM/YYYY') AS fecha,
+    TO_CHAR(c.hora_inicio, 'HH24:MI') AS hora,
+    CONCAT(p.nombres, ' ', p.apellido_paterno) AS paciente,
+    CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+    ec.nombre AS estado
+FROM cita c
+INNER JOIN paciente p ON c.id_paciente = p.id_paciente
+INNER JOIN medico m ON c.id_medico = m.id_medico
+INNER JOIN estado_cita ec ON c.id_estado = ec.id_estado
+ORDER BY c.fecha_cita DESC, c.hora_inicio DESC
+LIMIT 20;
+
+-- Buscar cita por código
+SELECT 
+    c.codigo_cita,
+    TO_CHAR(c.fecha_cita, 'DD/MM/YYYY') AS fecha_cita,
+    TO_CHAR(c.hora_inicio, 'HH24:MI') || ' - ' || TO_CHAR(c.hora_fin, 'HH24:MI') AS horario,
+    CONCAT(p.nombres, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS paciente,
+    p.dni AS paciente_dni,
+    CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+    e.nombre AS especialidad,
+    co.nombre AS consultorio,
+    ec.nombre AS estado,
+    c.motivo_consulta
+FROM cita c
+INNER JOIN paciente p ON c.id_paciente = p.id_paciente
+INNER JOIN medico m ON c.id_medico = m.id_medico
+INNER JOIN especialidad e ON c.id_especialidad = e.id_especialidad
+INNER JOIN consultorio co ON c.id_consultorio = co.id_consultorio
+INNER JOIN estado_cita ec ON c.id_estado = ec.id_estado
+WHERE c.codigo_cita = 'CITA-2025-0001';
+
+-- Citas de un paciente específico
+SELECT 
+    c.codigo_cita,
+    TO_CHAR(c.fecha_cita, 'DD/MM/YYYY') AS fecha,
+    TO_CHAR(c.hora_inicio, 'HH24:MI') AS hora,
+    CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+    e.nombre AS especialidad,
+    ec.nombre AS estado
+FROM cita c
+INNER JOIN medico m ON c.id_medico = m.id_medico
+INNER JOIN especialidad e ON c.id_especialidad = e.id_especialidad
+INNER JOIN estado_cita ec ON c.id_estado = ec.id_estado
+WHERE c.id_paciente = 1
+ORDER BY c.fecha_cita DESC, c.hora_inicio DESC;
+
+-- Próximas citas de hoy
+SELECT 
+    c.codigo_cita,
+    TO_CHAR(c.hora_inicio, 'HH24:MI') AS hora,
+    CONCAT(p.nombres, ' ', p.apellido_paterno) AS paciente,
+    CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+    co.nombre AS consultorio,
+    ec.nombre AS estado
+FROM cita c
+INNER JOIN paciente p ON c.id_paciente = p.id_paciente
+INNER JOIN medico m ON c.id_medico = m.id_medico
+INNER JOIN consultorio co ON c.id_consultorio = co.id_consultorio
+INNER JOIN estado_cita ec ON c.id_estado = ec.id_estado
+WHERE c.fecha_cita = CURRENT_DATE
+  AND ec.codigo IN ('PENDIENTE', 'CONFIRMADA')
+ORDER BY c.hora_inicio;
+
+-- ===========================================
+-- 9. CONSULTAS DE ESTADOS
+-- ===========================================
+
+-- Conteo de citas por estado
+SELECT 
+    ec.nombre AS estado,
+    ec.color,
+    COUNT(c.id_cita) AS cantidad
+FROM estado_cita ec
+LEFT JOIN cita c ON ec.id_estado = c.id_estado
+GROUP BY ec.id_estado, ec.nombre, ec.color
+ORDER BY ec.id_estado;
+
+-- ===========================================
+-- 10. CONSULTAS DE NOTIFICACIONES
+-- ===========================================
+
+-- Últimas notificaciones
+SELECT 
+    n.tipo_notificacion,
+    n.destinatario_nombre,
+    n.destinatario_email,
+    n.asunto,
+    n.estado_envio,
+    TO_CHAR(n.fecha_creacion, 'DD/MM/YYYY HH24:MI:SS') AS fecha_creacion,
+    c.codigo_cita
+FROM notificacion n
+INNER JOIN cita c ON n.id_cita = c.id_cita
+ORDER BY n.fecha_creacion DESC
+LIMIT 10;
+
+-- Notificaciones pendientes de envío
+SELECT 
+    n.id_notificacion,
+    n.tipo_notificacion,
+    n.destinatario_email,
+    n.asunto,
+    n.intentos_envio,
+    c.codigo_cita
+FROM notificacion n
+INNER JOIN cita c ON n.id_cita = c.id_cita
+WHERE n.estado_envio = 'PENDIENTE'
+ORDER BY n.fecha_creacion;
+
+-- Notificaciones con error
+SELECT 
+    n.id_notificacion,
+    n.tipo_notificacion,
+    n.destinatario_email,
+    n.intentos_envio,
+    n.mensaje_error,
+    c.codigo_cita
+FROM notificacion n
+INNER JOIN cita c ON n.id_cita = c.id_cita
+WHERE n.estado_envio = 'ERROR'
+ORDER BY n.fecha_creacion DESC;
+```
+
+---
+
+### 6.6.2. Script 12: Consultas Intermedias
+
+**Ubicación:** `database/dql/12_intermediate_queries.sql`
+
+**Propósito:** Consultas con JOINs, agregaciones y subconsultas.
+
+```sql
+-- ============================================
+-- Script: 12_intermediate_queries.sql
+-- Descripción: Consultas intermedias
+-- Autor: [francito69]
+-- Fecha: 2025-10-30
+-- ============================================
+
+-- ===========================================
+-- 1. CONSULTAS CON AGREGACIONES
+-- ===========================================
+
+-- Estadísticas generales del sistema
+SELECT 
+    (SELECT COUNT(*) FROM usuario WHERE rol = 'PACIENTE') AS total_pacientes,
+    (SELECT COUNT(*) FROM usuario WHERE rol = 'MEDICO') AS total_medicos,
+    (SELECT COUNT(*) FROM especialidad WHERE estado = 'ACTIVO') AS total_especialidades,
+    (SELECT COUNT(*) FROM consultorio WHERE estado = 'ACTIVO') AS total_consultorios,
+    (SELECT COUNT(*) FROM cita) AS total_citas,
+    (SELECT COUNT(*) FROM cita WHERE fecha_cita >= CURRENT_DATE) AS citas_futuras;
+
+-- Médicos con más citas atendidas
+SELECT 
+    m.id_medico,
+    CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+    COUNT(c.id_cita) AS total_citas,
+    COUNT(CASE WHEN ec.codigo = 'ATENDIDA' THEN 1 END) AS citas_atendidas,
+    COUNT(CASE WHEN ec.codigo = 'CANCELADA' THEN 1 END) AS citas_canceladas,
+    ROUND(100.0 * COUNT(CASE WHEN ec.codigo = 'ATENDIDA' THEN 1 END) / NULLIF(COUNT(c.id_cita), 0), 2) AS porcentaje_atencion
+FROM medico m
+LEFT JOIN cita c ON m.id_medico = c.id_medico
+LEFT JOIN estado_cita ec ON c.id_estado = ec.id_estado
+GROUP BY m.id_medico, m.nombres, m.apellido_paterno
+HAVING COUNT(c.id_cita) > 0
+ORDER BY citas_atendidas DESC;
+
+-- Especialidades más solicitadas
+SELECT 
+    e.nombre AS especialidad,
+    COUNT(c.id_cita) AS total_citas,
+    COUNT(CASE WHEN c.fecha_cita >= CURRENT_DATE THEN 1 END) AS citas_futuras,
+    COUNT(CASE WHEN ec.codigo = 'CANCELADA' THEN 1 END) AS citas_canceladas
+FROM especialidad e
+LEFT JOIN cita c ON e.id_especialidad = c.id_especialidad
+LEFT JOIN estado_cita ec ON c.id_estado = ec.id_estado
+GROUP BY e.id_especialidad, e.nombre
+ORDER BY total_citas DESC;
+
+-- Pacientes con más citas
+SELECT 
+    p.id_paciente,
+    CONCAT(p.nombres, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS paciente,
+    p.dni,
+    COUNT(c.id_cita) AS total_citas,
+    COUNT(CASE WHEN ec.codigo = 'ATENDIDA' THEN 1 END) AS citas_atendidas,
+    COUNT(CASE WHEN ec.codigo = 'NO_PRESENTADO' THEN 1 END) AS inasistencias
+FROM paciente p
+LEFT JOIN cita c ON p.id_paciente = c.id_paciente
+LEFT JOIN estado_cita ec ON c.id_estado = ec.id_estado
+GROUP BY p.id_paciente, p.nombres, p.apellido_paterno, p.apellido_materno, p.dni
+HAVING COUNT(c.id_cita) > 0
+ORDER BY total_citas DESC;
+
+-- Consultorios más utilizados
+SELECT 
+    co.codigo,
+    co.nombre AS consultorio,
+    co.piso,
+    COUNT(c.id_cita) AS total_citas,
+    COUNT(CASE WHEN c.fecha_cita >= CURRENT_DATE THEN 1 END) AS citas_futuras
+FROM consultorio co
+LEFT JOIN cita c ON co.id_consultorio = c.id_consultorio
+GROUP BY co.id_consultorio, co.codigo, co.nombre, co.piso
+ORDER BY total_citas DESC;
+
+-- ===========================================
+-- 2. CONSULTAS CON FECHAS
+-- ===========================================
+
+-- Citas por mes (últimos 6 meses)
+SELECT 
+    TO_CHAR(c.fecha_cita, 'YYYY-MM') AS mes,
+    TO_CHAR(c.fecha_cita, 'TMMonth YYYY') AS mes_nombre,
+    COUNT(*) AS total_citas,
+    COUNT(CASE WHEN ec.codigo = 'ATENDIDA' THEN 1 END) AS atendidas,
+    COUNT(CASE WHEN ec.codigo = 'CANCELADA' THEN 1 END) AS canceladas,
+    COUNT(CASE WHEN ec.codigo = 'NO_PRESENTADO' THEN 1 END) AS no_presentados
+FROM cita c
+INNER JOIN estado_cita ec ON c.id_estado = ec.id_estado
+WHERE c.fecha_cita >= CURRENT_DATE - INTERVAL '6 months'
+GROUP BY TO_CHAR(c.fecha_cita, 'YYYY-MM'), TO_CHAR(c.fecha_cita, 'TMMonth YYYY')
+ORDER BY mes DESC;
+
+-- Citas por día de la semana
+SELECT 
+    TO_CHAR(c.fecha_cita, 'Day') AS dia_semana,
+    COUNT(*) AS total_citas,
+    ROUND(AVG(COUNT(*)) OVER(), 2) AS promedio_diario
+FROM cita c
+WHERE c.fecha_cita >= CURRENT_DATE - INTERVAL '3 months'
+GROUP BY TO_CHAR(c.fecha_cita, 'Day'), EXTRACT(DOW FROM c.fecha_cita)
+ORDER BY EXTRACT(DOW FROM c.fecha_cita);
+
+-- Horarios más solicitados
+SELECT 
+    EXTRACT(HOUR FROM c.hora_inicio) AS hora,
+    COUNT(*) AS cantidad_citas,
+    ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM cita), 2) AS porcentaje
+FROM cita c
+GROUP BY EXTRACT(HOUR FROM c.hora_inicio)
+ORDER BY hora;
+
+-- ===========================================
+-- 3. CONSULTAS CON SUBCONSULTAS
+-- ===========================================
+
+-- Médicos sin citas programadas
+SELECT 
+    m.id_medico,
+    CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+    m.numero_colegiatura,
+    m.email
+FROM medico m
+WHERE m.estado = 'ACTIVO'
+  AND NOT EXISTS (
+      SELECT 1 
+      FROM cita c 
+      WHERE c.id_medico = m.id_medico 
+        AND c.fecha_cita >= CURRENT_DATE
+        AND c.id_estado IN (SELECT id_estado FROM estado_cita WHERE codigo IN ('PENDIENTE', 'CONFIRMADA'))
+  )
+ORDER BY m.apellido_paterno;
+
+-- Pacientes sin citas recientes (últimos 6 meses)
+SELECT 
+    p.id_paciente,
+    CONCAT(p.nombres, ' ', p.apellido_paterno) AS paciente,
+    p.dni,
+    p.email,
+    (SELECT MAX(c.fecha_cita) 
+     FROM cita c 
+     WHERE c.id_paciente = p.id_paciente) AS ultima_cita
+FROM paciente p
+WHERE p.estado = 'ACTIVO'
+  AND NOT EXISTS (
+      SELECT 1 
+      FROM cita c 
+      WHERE c.id_paciente = p.id_paciente 
+        AND c.fecha_cita >= CURRENT_DATE - INTERVAL '6 months'
+  )
+ORDER BY ultima_cita DESC NULLS LAST;
+
+-- Consultorios disponibles en horario específico
+SELECT 
+    co.codigo,
+    co.nombre,
+    co.piso
+FROM consultorio co
+WHERE co.estado = 'ACTIVO'
+  AND NOT EXISTS (
+      SELECT 1
+      FROM cita c
+      WHERE c.id_consultorio = co.id_consultorio
+        AND c.fecha_cita = CURRENT_DATE + INTERVAL '7 days'
+        AND c.hora_inicio = '10:00'
+        AND c.id_estado IN (SELECT id_estado FROM estado_cita WHERE codigo IN ('PENDIENTE', 'CONFIRMADA'))
+  )
+ORDER BY co.piso, co.codigo;
+
+-- ===========================================
+-- 4. CONSULTAS CON VISTAS
+-- ===========================================
+
+-- Usar vista de citas completas
+SELECT 
+    codigo_cita,
+    fecha_cita,
+    hora_inicio,
+    paciente_nombre_completo,
+    medico_nombre_completo,
+    especialidad_nombre,
+    estado_nombre
+FROM v_citas_completas
+WHERE fecha_cita BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
+ORDER BY fecha_cita, hora_inicio;
+
+-- Usar vista de horarios disponibles
+SELECT 
+    dia_semana,
+    hora_inicio,
+    hora_fin,
+    medico_nombre,
+    especialidad_nombre,
+    consultorio_nombre
+FROM v_horarios_disponibles
+WHERE dia_semana = 'LUNES'
+ORDER BY hora_inicio;
+
+-- Usar vista de médicos con especialidades
+SELECT 
+    nombre_completo,
+    numero_colegiatura,
+    especialidades,
+    cantidad_especialidades
+FROM v_medicos_con_especialidades
+WHERE estado = 'ACTIVO'
+ORDER BY cantidad_especialidades DESC, nombre_completo;
+
+-- ===========================================
+-- 5. ANÁLISIS DE CANCELACIONES
+-- ===========================================
+
+-- Motivos de cancelación más frecuentes
+SELECT 
+    c.cancelado_por,
+    COUNT(*) AS cantidad,
+    ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM cita WHERE id_estado = (SELECT id_estado FROM estado_cita WHERE codigo = 'CANCELADA')), 2) AS porcentaje
+FROM cita c
+WHERE c.id_estado = (SELECT id_estado FROM estado_cita WHERE codigo = 'CANCELADA')
+  AND c.cancelado_por IS NOT NULL
+GROUP BY c.cancelado_por
+ORDER BY cantidad DESC;
+
+-- Pacientes con más cancelaciones
+SELECT 
+    p.id_paciente,
+    CONCAT(p.nombres, ' ', p.apellido_paterno) AS paciente,
+    COUNT(c.id_cita) AS total_citas,
+    COUNT(CASE WHEN ec.codigo = 'CANCELADA' THEN 1 END) AS cancelaciones,
+    ROUND(100.0 * COUNT(CASE WHEN ec.codigo = 'CANCELADA' THEN 1 END) / NULLIF(COUNT(c.id_cita), 0), 2) AS tasa_cancelacion
+FROM paciente p
+INNER JOIN cita c ON p.id_paciente = c.id_paciente
+INNER JOIN estado_cita ec ON c.id_estado = ec.id_estado
+GROUP BY p.id_paciente, p.nombres, p.apellido_paterno
+HAVING COUNT(CASE WHEN ec.codigo = 'CANCELADA' THEN 1 END) > 0
+ORDER BY cancelaciones DESC;
+
+-- ===========================================
+-- 6. ANÁLISIS DE OCUPACIÓN
+-- ===========================================
+
+-- Tasa de ocupación por médico
+SELECT 
+    CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+    COUNT(ha.id_horario) AS horarios_configurados,
+    COUNT(c.id_cita) AS citas_reservadas,
+    ROUND(100.0 * COUNT(c.id_cita) / NULLIF(COUNT(ha.id_horario), 0), 2) AS tasa_ocupacion
+FROM medico m
+LEFT JOIN horario_atencion ha ON m.id_medico = ha.id_medico AND ha.estado = 'ACTIVO'
+LEFT JOIN cita c ON m.id_medico = c.id_medico 
+    AND c.fecha_cita BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'
+    AND c.id_estado IN (SELECT id_estado FROM estado_cita WHERE codigo IN ('PENDIENTE', 'CONFIRMADA'))
+GROUP BY m.id_medico, m.nombres, m.apellido_paterno
+ORDER BY tasa_ocupacion DESC;
+
+-- ===========================================
+-- 7. INDICADORES DE CALIDAD
+-- ===========================================
+
+-- Tasa de no presentación por paciente
+SELECT 
+    p.id_paciente,
+    CONCAT(p.nombres, ' ', p.apellido_paterno) AS paciente,
+    COUNT(c.id_cita) AS total_citas,
+    COUNT(CASE WHEN ec.codigo = 'NO_PRESENTADO' THEN 1 END) AS no_presentaciones,
+    ROUND(100.0 * COUNT(CASE WHEN ec.codigo = 'NO_PRESENTADO' THEN 1 END) / NULLIF(COUNT(c.id_cita), 0), 2) AS tasa_no_presentacion
+FROM paciente p
+INNER JOIN cita c ON p.id_paciente = c.id_paciente
+INNER JOIN estado_cita ec ON c.id_estado = ec.id_estado
+WHERE c.fecha_cita < CURRENT_DATE
+GROUP BY p.id_paciente, p.nombres, p.apellido_paterno
+HAVING COUNT(CASE WHEN ec.codigo = 'NO_PRESENTADO' THEN 1 END) > 0
+ORDER BY tasa_no_presentacion DESC;
+```
+
+---
+
+### 6.6.3. Script 13: Consultas Avanzadas
+
+**Ubicación:** `database/dql/13_advanced_queries.sql`
+
+**Propósito:** Consultas avanzadas con window functions, CTEs y análisis complejos.
+
+```sql
+-- ============================================
+-- Script: 13_advanced_queries.sql
+-- Descripción: Consultas avanzadas
+-- Autor: [francito69]
+-- Fecha: 2025-10-30
+-- ============================================
+
+-- ===========================================
+-- 1. CONSULTAS CON WINDOW FUNCTIONS
+-- ===========================================
+
+-- Ranking de médicos por cantidad de citas atendidas
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY COUNT(c.id_cita) DESC) AS ranking,
+    CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+    m.numero_colegiatura,
+    COUNT(c.id_cita) AS total_citas,
+    COUNT(CASE WHEN ec.codigo = 'ATENDIDA' THEN 1 END) AS citas_atendidas,
+    ROUND(100.0 * COUNT(CASE WHEN ec.codigo = 'ATENDIDA' THEN 1 END) / NULLIF(COUNT(c.id_cita), 0), 2) AS tasa_atencion,
+    ROUND(AVG(COUNT(c.id_cita)) OVER(), 2) AS promedio_general
+FROM medico m
+LEFT JOIN cita c ON m.id_medico = c.id_medico
+LEFT JOIN estado_cita ec ON c.id_estado = ec.id_estado
+WHERE m.estado = 'ACTIVO'
+GROUP BY m.id_medico, m.nombres, m.apellido_paterno, m.numero_colegiatura
+HAVING COUNT(c.id_cita) > 0
+ORDER BY ranking;
+
+-- Análisis de tendencia de citas por mes
+SELECT 
+    TO_CHAR(fecha_cita, 'YYYY-MM') AS mes,
+    COUNT(*) AS citas_mes,
+    LAG(COUNT(*), 1) OVER (ORDER BY TO_CHAR(fecha_cita, 'YYYY-MM')) AS citas_mes_anterior,
+    COUNT(*) - LAG(COUNT(*), 1) OVER (ORDER BY TO_CHAR(fecha_cita, 'YYYY-MM')) AS diferencia,
+    ROUND(100.0 * (COUNT(*) - LAG(COUNT(*), 1) OVER (ORDER BY TO_CHAR(fecha_cita, 'YYYY-MM'))) / 
+          NULLIF(LAG(COUNT(*), 1) OVER (ORDER BY TO_CHAR(fecha_cita, 'YYYY-MM')), 0), 2) AS variacion_porcentual
+FROM cita
+WHERE fecha_cita >= CURRENT_DATE - INTERVAL '12 months'
+GROUP BY TO_CHAR(fecha_cita, 'YYYY-MM')
+ORDER BY mes DESC;
+
+-- Distribución acumulada de citas por hora
+SELECT 
+    EXTRACT(HOUR FROM hora_inicio) AS hora,
+    COUNT(*) AS citas,
+    SUM(COUNT(*)) OVER (ORDER BY EXTRACT(HOUR FROM hora_inicio)) AS citas_acumuladas,
+    ROUND(100.0 * SUM(COUNT(*)) OVER (ORDER BY EXTRACT(HOUR FROM hora_inicio)) / 
+          SUM(COUNT(*)) OVER(), 2) AS porcentaje_acumulado
+FROM cita
+GROUP BY EXTRACT(HOUR FROM hora_inicio)
+ORDER BY hora;
+
+-- ===========================================
+-- 2. CONSULTAS CON CTEs (Common Table Expressions)
+-- ===========================================
+
+-- Análisis completo de productividad de médicos
+WITH citas_medico AS (
+    SELECT 
+        m.id_medico,
+        CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico_nombre,
+        COUNT(c.id_cita) AS total_citas,
+        COUNT(CASE WHEN ec.codigo = 'ATENDIDA' THEN 1 END) AS atendidas,
+        COUNT(CASE WHEN ec.codigo = 'CANCELADA' THEN 1 END) AS canceladas,
+        COUNT(CASE WHEN ec.codigo = 'NO_PRESENTADO' THEN 1 END) AS no_presentados
+    FROM medico m
+    LEFT JOIN cita c ON m.id_medico = c.id_medico
+    LEFT JOIN estado_cita ec ON c.id_estado = ec.id_estado
+    WHERE m.estado = 'ACTIVO'
+    GROUP BY m.id_medico, m.nombres, m.apellido_paterno
+),
+horarios_medico AS (
+    SELECT 
+        id_medico,
+        COUNT(*) AS dias_atencion,
+        SUM(EXTRACT(EPOCH FROM (hora_fin - hora_inicio))/3600) AS horas_semanales
+    FROM horario_atencion
+    WHERE estado = 'ACTIVO'
+    GROUP BY id_medico
+)
+SELECT 
+    cm.medico_nombre,
+    cm.total_citas,
+    cm.atendidas,
+    cm.canceladas,
+    cm.no_presentados,
+    ROUND(100.0 * cm.atendidas / NULLIF(cm.total_citas, 0), 2) AS tasa_atencion,
+    hm.dias_atencion,
+    ROUND(hm.horas_semanales, 2) AS horas_semanales,
+    ROUND(cm.atendidas::NUMERIC / NULLIF(hm.horas_semanales, 0), 2) AS citas_por_hora
+FROM citas_medico cm
+LEFT JOIN horarios_medico hm ON cm.id_medico = hm.id_medico
+ORDER BY cm.atendidas DESC;
+
+-- Análisis de pacientes frecuentes vs esporádicos
+WITH clasificacion_pacientes AS (
+    SELECT 
+        p.id_paciente,
+        CONCAT(p.nombres, ' ', p.apellido_paterno) AS paciente_nombre,
+        COUNT(c.id_cita) AS total_citas,
+        MIN(c.fecha_cita) AS primera_cita,
+        MAX(c.fecha_cita) AS ultima_cita,
+        CASE 
+            WHEN COUNT(c.id_cita) >= 5 THEN 'FRECUENTE'
+            WHEN COUNT(c.id_cita) BETWEEN 2 AND 4 THEN 'REGULAR'
+            WHEN COUNT(c.id_cita) = 1 THEN 'ESPORADICO'
+            ELSE 'SIN_CITAS'
+        END AS clasificacion
+    FROM paciente p
+    LEFT JOIN cita c ON p.id_paciente = c.id_paciente
+    WHERE p.estado = 'ACTIVO'
+    GROUP BY p.id_paciente, p.nombres, p.apellido_paterno
+)
+SELECT 
+    clasificacion,
+    COUNT(*) AS cantidad_pacientes,
+    ROUND(AVG(total_citas), 2) AS promedio_citas,
+    ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER(), 2) AS porcentaje
+FROM clasificacion_pacientes
+GROUP BY clasificacion
+ORDER BY 
+    CASE clasificacion
+        WHEN 'FRECUENTE' THEN 1
+        WHEN 'REGULAR' THEN 2
+        WHEN 'ESPORADICO' THEN 3
+        WHEN 'SIN_CITAS' THEN 4
+    END;
+
+-- ===========================================
+-- 3. ANÁLISIS TEMPORAL AVANZADO
+-- ===========================================
+
+-- Proyección de demanda por día de la semana y hora
+WITH demanda_historica AS (
+    SELECT 
+        TO_CHAR(fecha_cita, 'Day') AS dia_semana,
+        EXTRACT(DOW FROM fecha_cita) AS dia_numero,
+        EXTRACT(HOUR FROM hora_inicio) AS hora,
+        COUNT(*) AS cantidad_citas
+    FROM cita
+    WHERE fecha_cita >= CURRENT_DATE - INTERVAL '3 months'
+      AND fecha_cita < CURRENT_DATE
+    GROUP BY TO_CHAR(fecha_cita, 'Day'), EXTRACT(DOW FROM fecha_cita), EXTRACT(HOUR FROM hora_inicio)
+)
+SELECT 
+    dia_semana,
+    hora,
+    ROUND(AVG(cantidad_citas), 2) AS promedio_citas,
+    MIN(cantidad_citas) AS minimo,
+    MAX(cantidad_citas) AS maximo,
+    ROUND(STDDEV(cantidad_citas), 2) AS desviacion_estandar
+FROM demanda_historica
+GROUP BY dia_semana, dia_numero, hora
+ORDER BY dia_numero, hora;
+
+-- Identificar slots horarios más y menos demandados
+WITH slots_horarios AS (
+    SELECT 
+        ha.id_medico,
+        ha.dia_semana,
+        ha.hora_inicio,
+        ha.hora_fin,
+        e.nombre AS especialidad,
+        COUNT(c.id_cita) AS citas_reservadas,
+        ROUND(EXTRACT(EPOCH FROM (ha.hora_fin - ha.hora_inicio)) / (ha.duracion_cita * 60), 0) AS capacidad_maxima
+    FROM horario_atencion ha
+    INNER JOIN especialidad e ON ha.id_especialidad = e.id_especialidad
+    LEFT JOIN cita c ON ha.id_medico = c.id_medico 
+        AND TO_CHAR(c.fecha_cita, 'Day') = ha.dia_semana
+        AND c.hora_inicio >= ha.hora_inicio 
+        AND c.hora_fin <= ha.hora_fin
+        AND c.fecha_cita >= CURRENT_DATE
+        AND c.id_estado IN (SELECT id_estado FROM estado_cita WHERE codigo IN ('PENDIENTE', 'CONFIRMADA'))
+    WHERE ha.estado = 'ACTIVO'
+    GROUP BY ha.id_medico, ha.dia_semana, ha.hora_inicio, ha.hora_fin, e.nombre, ha.duracion_cita
+)
+SELECT 
+    dia_semana,
+    TO_CHAR(hora_inicio, 'HH24:MI') || ' - ' || TO_CHAR(hora_fin, 'HH24:MI') AS horario,
+    especialidad,
+    citas_reservadas,
+    capacidad_maxima,
+    ROUND(100.0 * citas_reservadas / NULLIF(capacidad_maxima, 0), 2) AS porcentaje_ocupacion,
+    CASE 
+        WHEN ROUND(100.0 * citas_reservadas / NULLIF(capacidad_maxima, 0), 2) >= 80 THEN 'ALTA DEMANDA'
+        WHEN ROUND(100.0 * citas_reservadas / NULLIF(capacidad_maxima, 0), 2) >= 50 THEN 'DEMANDA MEDIA'
+        ELSE 'BAJA DEMANDA'
+    END AS nivel_demanda
+FROM slots_horarios
+ORDER BY porcentaje_ocupacion DESC;
+
+-- ===========================================
+-- 4. ANÁLISIS DE COHORTES
+-- ===========================================
+
+-- Retención de pacientes por mes de registro
+WITH pacientes_cohorte AS (
+    SELECT 
+        p.id_paciente,
+        DATE_TRUNC('month', p.fecha_registro) AS mes_registro,
+        DATE_TRUNC('month', c.fecha_cita) AS mes_cita
+    FROM paciente p
+    LEFT JOIN cita c ON p.id_paciente = c.id_paciente
+    WHERE p.fecha_registro >= CURRENT_DATE - INTERVAL '12 months'
+),
+cohorte_actividad AS (
+    SELECT 
+        TO_CHAR(mes_registro, 'YYYY-MM') AS cohorte,
+        EXTRACT(MONTH FROM AGE(mes_cita, mes_registro)) AS meses_desde_registro,
+        COUNT(DISTINCT id_paciente) AS pacientes_activos
+    FROM pacientes_cohorte
+    WHERE mes_cita IS NOT NULL
+    GROUP BY mes_registro, EXTRACT(MONTH FROM AGE(mes_cita, mes_registro))
+)
+SELECT 
+    cohorte,
+    meses_desde_registro,
+    pacientes_activos,
+    LAG(pacientes_activos, 1) OVER (PARTITION BY cohorte ORDER BY meses_desde_registro) AS mes_anterior,
+    ROUND(100.0 * pacientes_activos / 
+          FIRST_VALUE(pacientes_activos) OVER (PARTITION BY cohorte ORDER BY meses_desde_registro), 2) AS tasa_retencion
+FROM cohorte_actividad
+WHERE meses_desde_registro BETWEEN 0 AND 6
+ORDER BY cohorte DESC, meses_desde_registro;
+
+-- ===========================================
+-- 5. DETECCIÓN DE PATRONES ANÓMALOS
+-- ===========================================
+
+-- Identificar médicos con alta tasa de cancelación
+WITH estadisticas_medico AS (
+    SELECT 
+        m.id_medico,
+        CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+        COUNT(c.id_cita) AS total_citas,
+        COUNT(CASE WHEN ec.codigo = 'CANCELADA' THEN 1 END) AS cancelaciones,
+        ROUND(100.0 * COUNT(CASE WHEN ec.codigo = 'CANCELADA' THEN 1 END) / 
+              NULLIF(COUNT(c.id_cita), 0), 2) AS tasa_cancelacion,
+        ROUND(AVG(COUNT(CASE WHEN ec.codigo = 'CANCELADA' THEN 1 END)) OVER() / 
+              NULLIF(AVG(COUNT(c.id_cita)) OVER(), 0) * 100, 2) AS tasa_promedio_sistema
+    FROM medico m
+    LEFT JOIN cita c ON m.id_medico = c.id_medico
+    LEFT JOIN estado_cita ec ON c.id_estado = ec.id_estado
+    WHERE m.estado = 'ACTIVO'
+    GROUP BY m.id_medico, m.nombres, m.apellido_paterno
+    HAVING COUNT(c.id_cita) >= 5
+)
+SELECT 
+    medico,
+    total_citas,
+    cancelaciones,
+    tasa_cancelacion,
+    tasa_promedio_sistema,
+    CASE 
+        WHEN tasa_cancelacion > tasa_promedio_sistema * 1.5 THEN 'ALERTA'
+        WHEN tasa_cancelacion > tasa_promedio_sistema * 1.2 THEN 'ATENCIÓN'
+        ELSE 'NORMAL'
+    END AS estado_alerta
+FROM estadisticas_medico
+WHERE tasa_cancelacion > tasa_promedio_sistema
+ORDER BY tasa_cancelacion DESC;
+
+-- Pacientes con patrón de múltiples inasistencias
+SELECT 
+    p.id_paciente,
+    CONCAT(p.nombres, ' ', p.apellido_paterno) AS paciente,
+    p.dni,
+    p.email,
+    COUNT(CASE WHEN ec.codigo = 'NO_PRESENTADO' THEN 1 END) AS total_inasistencias,
+    COUNT(c.id_cita) AS total_citas,
+    ROUND(100.0 * COUNT(CASE WHEN ec.codigo = 'NO_PRESENTADO' THEN 1 END) / 
+          NULLIF(COUNT(c.id_cita), 0), 2) AS tasa_inasistencia,
+    MAX(c.fecha_cita) FILTER (WHERE ec.codigo = 'NO_PRESENTADO') AS ultima_inasistencia
+FROM paciente p
+INNER JOIN cita c ON p.id_paciente = c.id_paciente
+INNER JOIN estado_cita ec ON c.id_estado = ec.id_estado
+WHERE p.estado = 'ACTIVO'
+  AND c.fecha_cita < CURRENT_DATE
+GROUP BY p.id_paciente, p.nombres, p.apellido_paterno, p.dni, p.email
+HAVING COUNT(CASE WHEN ec.codigo = 'NO_PRESENTADO' THEN 1 END) >= 2
+ORDER BY tasa_inasistencia DESC, total_inasistencias DESC;
+
+-- ===========================================
+-- 6. REPORTES EJECUTIVOS
+-- ===========================================
+
+-- Dashboard ejecutivo completo
+SELECT 
+    'RESUMEN GENERAL' AS seccion,
+    NULL::TEXT AS metrica,
+    NULL::NUMERIC AS valor,
+    NULL::TEXT AS observacion
+UNION ALL
+SELECT 
+    'Pacientes',
+    'Total Activos',
+    COUNT(*)::NUMERIC,
+    'Registrados en sistema'
+FROM paciente WHERE estado = 'ACTIVO'
+UNION ALL
+SELECT 
+    'Médicos',
+    'Total Activos',
+    COUNT(*)::NUMERIC,
+    'Disponibles para atención'
+FROM medico WHERE estado = 'ACTIVO'
+UNION ALL
+SELECT 
+    'Citas',
+    'Total Programadas',
+    COUNT(*)::NUMERIC,
+    'Próximos 30 días'
+FROM cita 
+WHERE fecha_cita BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'
+  AND id_estado IN (SELECT id_estado FROM estado_cita WHERE codigo IN ('PENDIENTE', 'CONFIRMADA'))
+UNION ALL
+SELECT 
+    'Ocupación',
+    'Tasa Promedio',
+    ROUND(AVG(ocupacion), 2),
+    'Últimos 30 días'
+FROM (
+    SELECT 
+        DATE(fecha_cita) AS fecha,
+        ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM horario_atencion WHERE estado = 'ACTIVO'), 2) AS ocupacion
+    FROM cita
+    WHERE fecha_cita >= CURRENT_DATE - INTERVAL '30 days'
+      AND fecha_cita < CURRENT_DATE
+    GROUP BY DATE(fecha_cita)
+) AS ocupacion_diaria
+UNION ALL
+SELECT 
+    'Satisfacción',
+    'Tasa de Atención',
+    ROUND(100.0 * COUNT(CASE WHEN ec.codigo = 'ATENDIDA' THEN 1 END) / NULLIF(COUNT(*), 0), 2),
+    'Últimos 3 meses'
+FROM cita c
+INNER JOIN estado_cita ec ON c.id_estado = ec.id_estado
+WHERE c.fecha_cita >= CURRENT_DATE - INTERVAL '3 months'
+  AND c.fecha_cita < CURRENT_DATE;
+
+-- ===========================================
+-- 7. OPTIMIZACIÓN Y RECOMENDACIONES
+-- ===========================================
+
+-- Identificar horarios con baja ocupación para redistribución
+WITH ocupacion_horarios AS (
+    SELECT 
+        m.id_medico,
+        CONCAT('Dr(a). ', m.nombres, ' ', m.apellido_paterno) AS medico,
+        ha.dia_semana,
+        TO_CHAR(ha.hora_inicio, 'HH24:MI') || ' - ' || TO_CHAR(ha.hora_fin, 'HH24:MI') AS horario,
+        e.nombre AS especialidad,
+        COUNT(c.id_cita) AS citas_reservadas,
+        ROUND(EXTRACT(EPOCH FROM (ha.hora_fin - ha.hora_inicio)) / (ha.duracion_cita * 60), 0) AS capacidad,
+        ROUND(100.0 * COUNT(c.id_cita) / 
+              NULLIF(ROUND(EXTRACT(EPOCH FROM (ha.hora_fin - ha.hora_inicio)) / (ha.duracion_cita * 60), 0), 0), 2) AS ocupacion
+    FROM medico m
+    INNER JOIN horario_atencion ha ON m.id_medico = ha.id_medico
+    INNER JOIN especialidad e ON ha.id_especialidad = e.id_especialidad
+    LEFT JOIN cita c ON ha.id_medico = c.id_medico 
+        AND TO_CHAR(c.fecha_cita, 'Day') = ha.dia_semana
+        AND c.hora_inicio >= ha.hora_inicio 
+        AND c.hora_fin <= ha.hora_fin
+        AND c.fecha_cita >= CURRENT_DATE - INTERVAL '60 days'
+        AND c.fecha_cita < CURRENT_DATE
+        AND c.id_estado IN (SELECT id_estado FROM estado_cita WHERE codigo IN ('PENDIENTE', 'CONFIRMADA', 'ATENDIDA'))
+    WHERE ha.estado = 'ACTIVO'
+    GROUP BY m.id_medico, m.nombres, m.apellido_paterno, ha.dia_semana, ha.hora_inicio, ha.hora_fin, e.nombre, ha.duracion_cita
+)
+SELECT 
+    medico,
+    dia_semana,
+    horario,
+    especialidad,
+    citas_reservadas,
+    capacidad,
+    ocupacion,
+    CASE 
+        WHEN ocupacion < 30 THEN 'CONSIDERAR REDISTRIBUCIÓN'
+        WHEN ocupacion < 50 THEN 'BAJA OCUPACIÓN'
+        WHEN ocupacion < 80 THEN 'OCUPACIÓN NORMAL'
+        ELSE 'ALTA DEMANDA'
+    END AS recomendacion
+FROM ocupacion_horarios
+WHERE ocupacion < 50
+ORDER BY ocupacion ASC, medico;
+```
+
+---
+
+## 6.7. Resumen de Implementación
+
+### 6.7.1. Checklist de Implementación
 
 ✅ **Fase 1: Estructura**
 - [x] Base de datos creada
@@ -983,12 +2238,77 @@ SELECT 'Consultorio' AS tabla, COUNT(*) AS registros FROM consultorio;
 
 ✅ **Fase 3: Datos**
 - [x] Datos de catálogo insertados
-- [x] Datos de prueba (opcional)
+- [x] Datos de prueba insertados
 
 ✅ **Fase 4: Verificación**
 - [x] Integridad referencial verificada
 - [x] Constraints funcionando
 - [x] Índices creados
+
+✅ **Fase 5: Consultas**
+- [x] Consultas básicas implementadas
+- [x] Consultas intermedias implementadas
+- [x] Consultas avanzadas implementadas
+
+---
+
+### 6.7.2. Comandos Útiles de PostgreSQL
+
+```bash
+# Conectarse a PostgreSQL
+psql -U postgres
+
+# Listar bases de datos
+\l
+
+# Conectarse a una base de datos
+\c sistema_consultas_medicas
+
+# Listar tablas
+\dt
+
+# Describir estructura de una tabla
+\d nombre_tabla
+
+# Listar vistas
+\dv
+
+# Listar funciones
+\df
+
+# Listar triggers
+\dy
+
+# Ver esquemas
+\dn
+
+# Exportar resultado de consulta a CSV
+\copy (SELECT * FROM cita) TO '/tmp/citas.csv' CSV HEADER;
+
+# Ejecutar script SQL desde archivo
+\i /ruta/al/script.sql
+
+# Salir de psql
+\q
+```
+
+---
+
+### 6.7.3. Backup y Restore
+
+```bash
+# Hacer backup completo de la base de datos
+pg_dump -U postgres -d sistema_consultas_medicas -F c -f backup_sistema.dump
+
+# Restaurar desde backup
+pg_restore -U postgres -d sistema_consultas_medicas backup_sistema.dump
+
+# Backup solo de datos (sin estructura)
+pg_dump -U postgres -d sistema_consultas_medicas --data-only -f backup_datos.sql
+
+# Backup solo de estructura (sin datos)
+pg_dump -U postgres -d sistema_consultas_medicas --schema-only -f backup_estructura.sql
+```
 
 ---
 
