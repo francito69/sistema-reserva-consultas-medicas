@@ -419,12 +419,9 @@ public class Paciente {
 | **Spring Data JPA** | 3.2.x | Capa de persistencia |
 | **Spring Security** | 6.x | Autenticación y autorización |
 | **Spring Validation** | 3.x | Validación de datos |
-| **PostgreSQL** | 15.x | Sistema de gestión de BD |
+| **PostgreSQL, SUPABASE** | 15.x | Sistema de gestión de BD |
 | **Maven** | 3.9.x | Gestión de dependencias |
-| **Lombok** | 1.18.x | Reducción de código boilerplate |
-| **MapStruct** | 1.5.x | Mapeo de DTOs |
-| **JUnit 5** | 5.10.x | Testing unitario |
-| **Mockito** | 5.x | Mocking para tests |
+
 
 ### 1.5.2. Frontend
 
@@ -433,8 +430,6 @@ public class Paciente {
 | **HTML5** | - | Estructura de páginas |
 | **CSS3** | - | Estilos y diseño |
 | **JavaScript** | ES6+ | Lógica del cliente |
-| **Bootstrap** | 5.3.x | Framework CSS responsivo |
-| **Font Awesome** | 6.x | Iconografía |
 
 ### 1.5.3. Herramientas de Desarrollo
 
