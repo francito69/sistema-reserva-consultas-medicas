@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil | Sistema de Consultas Médicas</title>
+    <link rel="stylesheet" href="/css/design-system.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/layouts.css">
+    <style>
+        .dashboard-grid{display:grid;grid-template-columns:250px 1fr;min-height:100vh;background-color:var(--bg-secondary)}.dashboard-sidebar{background-color:white;box-shadow:var(--shadow-md);padding:var(--space-6);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}.sidebar-brand{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-8);padding-bottom:var(--space-6);border-bottom:2px solid var(--border-light)}.sidebar-brand-icon{font-size:var(--text-4xl)}.sidebar-brand-text{font-size:var(--text-lg);font-weight:700;color:var(--primary-500)}.sidebar-user{background-color:var(--primary-50);padding:var(--space-4);border-radius:var(--radius-lg);margin-bottom:var(--space-6)}.sidebar-user-name{font-weight:700;color:var(--text-primary);margin-bottom:var(--space-1)}.sidebar-user-role{font-size:var(--text-sm);color:var(--text-secondary)}.sidebar-nav{flex:1}.sidebar-nav-item{list-style:none;margin-bottom:var(--space-2)}.sidebar-nav-link{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);color:var(--text-secondary);text-decoration:none;border-radius:var(--radius-lg);font-weight:500;transition:all var(--transition-fast)}.sidebar-nav-link:hover{background-color:var(--primary-50);color:var(--primary-600)}.sidebar-nav-link.active{background-color:var(--primary-500);color:white}.sidebar-nav-icon{font-size:var(--text-xl)}.sidebar-footer{padding-top:var(--space-6);border-top:2px solid var(--border-light)}.dashboard-main{padding:var(--space-8);overflow-y:auto}.dashboard-header{margin-bottom:var(--space-8)}.dashboard-title{font-size:var(--text-3xl);font-weight:700;color:var(--text-primary);margin-bottom:var(--space-2)}.dashboard-subtitle{font-size:var(--text-lg);color:var(--text-secondary)}.profile-container{background-color:white;border-radius:var(--radius-2xl);padding:var(--space-6);box-shadow:var(--shadow-sm);max-width:800px}.profile-header{text-align:center;padding:var(--space-6);border-bottom:2px solid var(--border-light);margin-bottom:var(--space-6)}.profile-avatar{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--primary-500),var(--primary-600));display:flex;align-items:center;justify-content:center;font-size:var(--text-5xl);color:white;margin:0 auto var(--space-4);box-shadow:var(--shadow-lg)}.profile-name{font-size:var(--text-2xl);font-weight:700;color:var(--text-primary);margin-bottom:var(--space-2)}.profile-role{font-size:var(--text-base);color:var(--text-secondary)}.form-section{margin-bottom:var(--space-6)}.section-title{font-size:var(--text-lg);font-weight:700;color:var(--text-primary);margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:2px solid var(--border-light)}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}.form-actions{display:flex;gap:var(--space-3);justify-content:flex-end;margin-top:var(--space-6);padding-top:var(--space-6);border-top:2px solid var(--border-light)}@media (max-width:768px){.dashboard-grid{grid-template-columns:1fr}.dashboard-sidebar{display:none}.form-row{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <div class="dashboard-grid">
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-brand"><span class="sidebar-brand-icon">🏥</span><span class="sidebar-brand-text">MediConsultas</span></div>
+            <div class="sidebar-user"><div class="sidebar-user-name" id="userName">Cargando...</div><div class="sidebar-user-role">Paciente</div></div>
+            <nav class="sidebar-nav">
+                <ul style="list-style:none;padding:0;margin:0">
+                    <li class="sidebar-nav-item"><a href="/pages/paciente/dashboard.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">🏠</span><span>Inicio</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/paciente/reservar-cita.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">📅</span><span>Reservar Cita</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/paciente/mis-citas.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">📋</span><span>Mis Citas</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/paciente/perfil.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon">👤</span><span>Mi Perfil</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer"><button class="btn btn-danger btn-block" id="logoutBtn"><span>🚪</span><span>Cerrar Sesión</span></button></div>
+        </aside>
+        <main class="dashboard-main">
+            <div class="dashboard-header animate-fade-in"><h1 class="dashboard-title">Mi Perfil</h1><p class="dashboard-subtitle">Administre su información personal</p></div>
+            <div class="profile-container animate-slide-up">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">👤</div>
+                    <h2 class="profile-name" id="profileName">Cargando...</h2>
+                    <p class="profile-role">Paciente</p>
+                </div>
+                <form id="profileForm">
+                    <input type="hidden" id="pacienteId">
+                    <div class="form-section">
+                        <h3 class="section-title">Información Personal</h3>
+                        <div class="form-row">
+                            <div class="form-group"><label for="nombre" class="form-label form-label-required">Nombre</label><input type="text" id="nombre" class="form-control" required minlength="2" maxlength="100"></div>
+                            <div class="form-group"><label for="apellido" class="form-label form-label-required">Apellido</label><input type="text" id="apellido" class="form-control" required minlength="2" maxlength="100"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="dni" class="form-label">DNI</label><input type="text" id="dni" class="form-control" disabled></div>
+                            <div class="form-group"><label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label><input type="date" id="fechaNacimiento" class="form-control" disabled></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="genero" class="form-label">Género</label><select id="genero" class="form-control" disabled><option value="M">Masculino</option><option value="F">Femenino</option><option value="O">Otro</option></select></div>
+                            <div class="form-group"><label for="edad" class="form-label">Edad</label><input type="text" id="edad" class="form-control" disabled></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h3 class="section-title">Información de Contacto</h3>
+                        <div class="form-group"><label for="telefono" class="form-label">Teléfono</label><input type="tel" id="telefono" class="form-control" placeholder="987654321" pattern="[0-9]{9}" maxlength="9"></div>
+                        <div class="form-group"><label for="email" class="form-label">Email</label><input type="email" id="email" class="form-control" placeholder="correo@ejemplo.com" maxlength="100"></div>
+                        <div class="form-group"><label for="direccion" class="form-label">Dirección</label><input type="text" id="direccion" class="form-control" placeholder="Av. Principal 123" maxlength="200"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-ghost" id="cancelBtn">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="saveBtn">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script src="/js/main.js"></script>
+    <script src="/js/utils/auth-guard.js"></script>
+    <script>
+        let originalData=null;document.addEventListener('DOMContentLoaded',async()=>{const user=getCurrentUser();if(!user||user.rol!=='PACIENTE'){window.location.href='/pages/auth/login.html';return}document.getElementById('userName').textContent=user.username;document.getElementById('logoutBtn').addEventListener('click',()=>{logout();window.location.href='/pages/auth/login.html'});document.getElementById('cancelBtn').addEventListener('click',loadProfile);document.getElementById('saveBtn').addEventListener('click',saveProfile);await loadProfile()});async function loadProfile(){const user=getCurrentUser(),token=getToken();try{const response=await fetch(`${API_BASE_URL}/pacientes/${user.idReferencia}`,{headers:{'Authorization':`Bearer ${token}`}});const paciente=await response.json();originalData=paciente;document.getElementById('pacienteId').value=paciente.idPaciente;document.getElementById('nombre').value=paciente.nombre;document.getElementById('apellido').value=paciente.apellido;document.getElementById('dni').value=paciente.dni;document.getElementById('fechaNacimiento').value=paciente.fechaNacimiento;document.getElementById('genero').value=paciente.genero;document.getElementById('telefono').value=paciente.telefono||'';document.getElementById('email').value=paciente.email||'';document.getElementById('direccion').value=paciente.direccion||'';const edad=calcularEdad(paciente.fechaNacimiento);document.getElementById('edad').value=edad+' años';document.getElementById('profileName').textContent=`${paciente.nombre} ${paciente.apellido}`;const initials=(paciente.nombre[0]+paciente.apellido[0]).toUpperCase();document.getElementById('profileAvatar').textContent=initials}catch(error){console.error('Error:',error);alert('Error al cargar el perfil')}}function calcularEdad(fecha){const nacimiento=new Date(fecha),hoy=new Date();let edad=hoy.getFullYear()-nacimiento.getFullYear();const mes=hoy.getMonth()-nacimiento.getMonth();if(mes<0||(mes===0&&hoy.getDate()<nacimiento.getDate()))edad--;return edad}async function saveProfile(){const form=document.getElementById('profileForm');if(!form.checkValidity()){form.reportValidity();return}const data={nombre:document.getElementById('nombre').value.trim(),apellido:document.getElementById('apellido').value.trim(),telefono:document.getElementById('telefono').value.trim()||null,email:document.getElementById('email').value.trim()||null,direccion:document.getElementById('direccion').value.trim()||null};const user=getCurrentUser(),token=getToken();try{const response=await fetch(`${API_BASE_URL}/pacientes/${user.idReferencia}`,{method:'PUT',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(data)});if(response.ok){alert('Perfil actualizado exitosamente');await loadProfile()}else{const error=await response.json();alert(`Error: ${error.message||'No se pudo actualizar el perfil'}`)}}catch(error){console.error('Error:',error);alert('Error al conectar con el servidor')}}
+    </script>
+</body>
+</html>

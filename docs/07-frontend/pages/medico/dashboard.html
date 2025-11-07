@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard del Médico - Sistema de Reserva de Consultas Médicas">
+    <title>Mi Panel - Médico | Sistema de Consultas Médicas</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/design-system.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/layouts.css">
+
+    <style>
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+            background-color: var(--bg-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-sidebar {
+                display: none;
+            }
+        }
+
+        /* Sidebar */
+        .dashboard-sidebar {
+            background-color: white;
+            box-shadow: var(--shadow-md);
+            padding: var(--space-6);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-6);
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .sidebar-brand-icon {
+            font-size: var(--text-4xl);
+        }
+
+        .sidebar-brand-text {
+            font-size: var(--text-lg);
+            font-weight: 700;
+            color: var(--medical-teal);
+        }
+
+        .sidebar-user {
+            background-color: var(--success-50);
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-6);
+        }
+
+        .sidebar-user-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+
+        .sidebar-user-role {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .sidebar-nav-item {
+            list-style: none;
+            margin-bottom: var(--space-2);
+        }
+
+        .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            transition: all var(--transition-fast);
+        }
+
+        .sidebar-nav-link:hover {
+            background-color: var(--success-50);
+            color: var(--success-600);
+        }
+
+        .sidebar-nav-link.active {
+            background-color: var(--medical-teal);
+            color: white;
+        }
+
+        .sidebar-nav-icon {
+            font-size: var(--text-xl);
+        }
+
+        .sidebar-footer {
+            padding-top: var(--space-6);
+            border-top: 2px solid var(--border-light);
+        }
+
+        /* Main Content */
+        .dashboard-main {
+            padding: var(--space-8);
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: var(--space-8);
+        }
+
+        .dashboard-title {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .dashboard-subtitle {
+            font-size: var(--text-lg);
+            color: var(--text-secondary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        /* Today's Schedule */
+        .schedule-section {
+            background-color: white;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-8);
+        }
+
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+        }
+
+        .schedule-title {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .date-selector {
+            display: flex;
+            gap: var(--space-2);
+            align-items: center;
+        }
+
+        .date-nav-btn {
+            padding: var(--space-2);
+            background-color: var(--gray-100);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .date-nav-btn:hover {
+            background-color: var(--gray-200);
+        }
+
+        .current-date {
+            font-weight: 600;
+            padding: var(--space-2) var(--space-4);
+            background-color: var(--medical-teal);
+            color: white;
+            border-radius: var(--radius-md);
+        }
+
+        .appointment-card {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--space-4);
+            transition: all var(--transition-fast);
+        }
+
+        .appointment-card:hover {
+            border-color: var(--medical-teal);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .appointment-time {
+            width: 5rem;
+            text-align: center;
+            padding: var(--space-3);
+            background-color: var(--success-50);
+            border-radius: var(--radius-lg);
+            flex-shrink: 0;
+        }
+
+        .appointment-time-hour {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            color: var(--success-700);
+        }
+
+        .appointment-time-period {
+            font-size: var(--text-xs);
+            color: var(--success-600);
+        }
+
+        .appointment-patient {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+
+        .patient-info {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .appointment-status-badge {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-lg);
+            font-size: var(--text-sm);
+            font-weight: 600;
+        }
+
+        .status-programada {
+            background-color: var(--warning-100);
+            color: var(--warning-700);
+        }
+
+        .status-confirmada {
+            background-color: var(--info-100);
+            color: var(--info-700);
+        }
+
+        .status-atendida {
+            background-color: var(--success-100);
+            color: var(--success-700);
+        }
+
+        .status-cancelada {
+            background-color: var(--error-100);
+            color: var(--error-700);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-12) var(--space-4);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: var(--space-4);
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-4);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: var(--z-modal);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-6);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            margin-bottom: var(--space-6);
+        }
+
+        .modal-title {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: var(--space-3);
+            margin-top: var(--space-6);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-grid">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-brand">
+                <span class="sidebar-brand-icon">👨‍⚕️</span>
+                <span class="sidebar-brand-text">Panel Médico</span>
+            </div>
+
+            <div class="sidebar-user">
+                <div class="sidebar-user-name" id="userName">Cargando...</div>
+                <div class="sidebar-user-role">Médico</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/medico/dashboard.html" class="sidebar-nav-link active">
+                            <span class="sidebar-nav-icon">🏠</span>
+                            <span>Inicio</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/medico/agenda.html" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon">📅</span>
+                            <span>Mi Agenda</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/medico/pacientes.html" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon">👥</span>
+                            <span>Mis Pacientes</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/medico/horarios.html" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon">🕐</span>
+                            <span>Gestionar Horarios</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/medico/perfil.html" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon">👤</span>
+                            <span>Mi Perfil</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="btn btn-danger btn-block" id="logoutBtn">
+                    <span>🚪</span>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Header -->
+            <div class="dashboard-header animate-fade-in">
+                <h1 class="dashboard-title">Bienvenido, Dr(a). <span id="doctorName"></span></h1>
+                <p class="dashboard-subtitle">Gestione sus citas y pacientes de manera eficiente</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid animate-slide-up">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="citasHoy">0</div>
+                            <div class="stat-card-label">Citas de Hoy</div>
+                        </div>
+                        <div class="stat-card-icon stat-card-icon-primary">
+                            📅
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-card-trend stat-card-trend-neutral">
+                            Consultas programadas
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="citasPendientes">0</div>
+                            <div class="stat-card-label">Pendientes</div>
+                        </div>
+                        <div class="stat-card-icon stat-card-icon-warning">
+                            ⏳
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-card-trend stat-card-trend-neutral">
+                            Por atender
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="citasAtendidas">0</div>
+                            <div class="stat-card-label">Atendidas Hoy</div>
+                        </div>
+                        <div class="stat-card-icon stat-card-icon-success">
+                            ✅
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-card-trend stat-card-trend-neutral">
+                            Completadas
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="totalPacientes">0</div>
+                            <div class="stat-card-label">Total Pacientes</div>
+                        </div>
+                        <div class="stat-card-icon stat-card-icon-info">
+                            👥
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-card-trend stat-card-trend-neutral">
+                            Atendidos este mes
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Schedule -->
+            <div class="schedule-section animate-slide-up" style="animation-delay: 0.1s;">
+                <div class="schedule-header">
+                    <h2 class="schedule-title">Agenda del Día</h2>
+                    <div class="date-selector">
+                        <button class="date-nav-btn" id="prevDayBtn">◀</button>
+                        <span class="current-date" id="currentDate">Cargando...</span>
+                        <button class="date-nav-btn" id="nextDayBtn">▶</button>
+                    </div>
+                </div>
+
+                <div id="scheduleList">
+                    <div class="spinner-container">
+                        <div class="spinner"></div>
+                        <p>Cargando agenda...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Actualizar Estado -->
+    <div class="modal-overlay" id="updateStatusModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Actualizar Estado de Cita</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Paciente</label>
+                    <p id="modalPatientName" style="font-weight: 600;"></p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Hora</label>
+                    <p id="modalAppointmentTime"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointmentStatus" class="form-label form-label-required">Nuevo Estado</label>
+                    <select id="appointmentStatus" class="form-control">
+                        <option value="">Seleccione un estado</option>
+                        <option value="ATENDIDA">✅ Atendida</option>
+                        <option value="NO_PRESENTADO">❌ No se presentó</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointmentObservations" class="form-label">Observaciones (Opcional)</label>
+                    <textarea
+                        id="appointmentObservations"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Ingrese observaciones sobre la consulta..."
+                        maxlength="500"
+                    ></textarea>
+                    <small style="display: block; margin-top: var(--space-1); font-size: var(--text-xs); color: var(--text-tertiary);">
+                        Máximo 500 caracteres
+                    </small>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="cancelModalBtn">Cancelar</button>
+                <button class="btn btn-success" id="saveStatusBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/utils/auth-guard.js"></script>
+    <script>
+        let selectedDate = new Date();
+        let selectedAppointment = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Verificar autenticación
+            const user = getCurrentUser();
+            if (!user || user.rol !== 'MEDICO') {
+                window.location.href = '/pages/auth/login.html';
+                return;
+            }
+
+            // Mostrar nombre de usuario
+            document.getElementById('userName').textContent = user.username;
+            document.getElementById('doctorName').textContent = user.username;
+
+            // Botón de cerrar sesión
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                logout();
+                window.location.href = '/pages/auth/login.html';
+            });
+
+            // Navegación de fechas
+            document.getElementById('prevDayBtn').addEventListener('click', () => {
+                selectedDate.setDate(selectedDate.getDate() - 1);
+                updateDateDisplay();
+                loadSchedule();
+            });
+
+            document.getElementById('nextDayBtn').addEventListener('click', () => {
+                selectedDate.setDate(selectedDate.getDate() + 1);
+                updateDateDisplay();
+                loadSchedule();
+            });
+
+            // Modal
+            document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
+            document.getElementById('saveStatusBtn').addEventListener('click', saveAppointmentStatus);
+
+            // Cargar datos iniciales
+            updateDateDisplay();
+            await loadDashboardData();
+            await loadSchedule();
+        });
+
+        function updateDateDisplay() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent =
+                selectedDate.toLocaleDateString('es-PE', options);
+        }
+
+        async function loadDashboardData() {
+            const user = getCurrentUser();
+            const token = getToken();
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/citas/medico/${user.idReferencia}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Error al cargar las citas');
+
+                const citas = await response.json();
+                const today = new Date().toDateString();
+
+                // Procesar estadísticas
+                const citasHoy = citas.filter(c => new Date(c.fechaCita).toDateString() === today);
+                const citasPendientes = citasHoy.filter(c => c.estado === 'PROGRAMADA' || c.estado === 'CONFIRMADA');
+                const citasAtendidas = citasHoy.filter(c => c.estado === 'ATENDIDA');
+
+                // Pacientes únicos del mes
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+                const citasMes = citas.filter(c => {
+                    const citaDate = new Date(c.fechaCita);
+                    return citaDate.getMonth() === currentMonth && citaDate.getFullYear() === currentYear;
+                });
+                const pacientesUnicos = new Set(citasMes.map(c => c.idPaciente)).size;
+
+                // Actualizar valores
+                document.getElementById('citasHoy').textContent = citasHoy.length;
+                document.getElementById('citasPendientes').textContent = citasPendientes.length;
+                document.getElementById('citasAtendidas').textContent = citasAtendidas.length;
+                document.getElementById('totalPacientes').textContent = pacientesUnicos;
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function loadSchedule() {
+            const user = getCurrentUser();
+            const token = getToken();
+            const container = document.getElementById('scheduleList');
+
+            try {
+                const dateStr = selectedDate.toISOString().split('T')[0];
+                const response = await fetch(`${API_BASE_URL}/citas/medico/${user.idReferencia}/fecha/${dateStr}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Error al cargar la agenda');
+
+                const citas = await response.json();
+                renderSchedule(citas);
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p class="empty-state-text">Error al cargar la agenda</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderSchedule(citas) {
+            const container = document.getElementById('scheduleList');
+
+            if (citas.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📅</div>
+                        <p class="empty-state-text">No hay citas programadas para este día</p>
+                        <a href="/pages/medico/horarios.html" class="btn btn-primary">
+                            Gestionar Horarios
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Ordenar por hora
+            citas.sort((a, b) => new Date(a.fechaCita) - new Date(b.fechaCita));
+
+            container.innerHTML = citas.map(cita => {
+                const fecha = new Date(cita.fechaCita);
+                const hora = fecha.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+                const [hourStr, period] = hora.split(' ');
+
+                const estadoClasses = {
+                    'PROGRAMADA': 'status-programada',
+                    'CONFIRMADA': 'status-confirmada',
+                    'ATENDIDA': 'status-atendida',
+                    'CANCELADA': 'status-cancelada',
+                    'NO_PRESENTADO': 'status-cancelada'
+                };
+
+                const estadoLabels = {
+                    'PROGRAMADA': '⏳ Programada',
+                    'CONFIRMADA': '✓ Confirmada',
+                    'ATENDIDA': '✅ Atendida',
+                    'CANCELADA': '❌ Cancelada',
+                    'NO_PRESENTADO': '❌ No se presentó'
+                };
+
+                const canUpdate = cita.estado === 'PROGRAMADA' || cita.estado === 'CONFIRMADA';
+
+                return `
+                    <div class="appointment-card">
+                        <div class="appointment-time">
+                            <div class="appointment-time-hour">${hourStr.split(':')[0]}:${hourStr.split(':')[1]}</div>
+                        </div>
+                        <div class="appointment-patient">
+                            <div class="patient-name">${cita.nombrePaciente}</div>
+                            <div class="patient-info">
+                                📋 ${cita.motivoConsulta || 'Sin motivo especificado'}<br>
+                                🏥 ${cita.consultorio || 'Consultorio no asignado'}
+                            </div>
+                        </div>
+                        <div class="appointment-actions">
+                            <span class="appointment-status-badge ${estadoClasses[cita.estado]}">
+                                ${estadoLabels[cita.estado]}
+                            </span>
+                            ${canUpdate ? `
+                                <button class="btn btn-sm btn-success" onclick="openUpdateModal(${JSON.stringify(cita).replace(/"/g, '&quot;')})">
+                                    Actualizar
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openUpdateModal(cita) {
+            selectedAppointment = cita;
+            const modal = document.getElementById('updateStatusModal');
+            const fecha = new Date(cita.fechaCita);
+            const hora = fecha.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+
+            document.getElementById('modalPatientName').textContent = cita.nombrePaciente;
+            document.getElementById('modalAppointmentTime').textContent = hora;
+            document.getElementById('appointmentStatus').value = '';
+            document.getElementById('appointmentObservations').value = '';
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('updateStatusModal').classList.remove('active');
+            selectedAppointment = null;
+        }
+
+        async function saveAppointmentStatus() {
+            const status = document.getElementById('appointmentStatus').value;
+            const observations = document.getElementById('appointmentObservations').value;
+
+            if (!status) {
+                alert('Por favor seleccione un estado');
+                return;
+            }
+
+            const token = getToken();
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/citas/${selectedAppointment.idCita}/estado`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        estado: status,
+                        observaciones: observations
+                    })
+                });
+
+                if (!response.ok) throw new Error('Error al actualizar el estado');
+
+                alert('Estado actualizado correctamente');
+                closeModal();
+                await loadDashboardData();
+                await loadSchedule();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al actualizar el estado de la cita');
+            }
+        }
+    </script>
+</body>
+</html>

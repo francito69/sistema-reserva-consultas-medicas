@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Citas - Médico</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Panel de Médico</h2>
+            <p class="sidebar-user" id="userName">Cargando...</p>
+        </div>
+        <nav>
+            <ul class="sidebar-menu">
+                <li><a href="/pages/medico/dashboard.html" class="sidebar-link">🏠 Inicio</a></li>
+                <li><a href="/pages/medico/agenda.html" class="sidebar-link">📅 Mi Agenda</a></li>
+                <li><a href="/pages/medico/citas.html" class="sidebar-link active">📋 Mis Citas</a></li>
+                <li><a href="/pages/medico/perfil.html" class="sidebar-link">👤 Mi Perfil</a></li>
+            </ul>
+        </nav>
+        <button class="btn btn-logout" id="logoutBtn">🚪 Cerrar Sesión</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+        <div class="dashboard-header fade-in">
+            <h1 class="dashboard-title">Gestión de Citas</h1>
+            <p class="dashboard-subtitle">Visualice y actualice el estado de sus citas</p>
+        </div>
+
+        <!-- Filtros -->
+        <div class="content-section slide-up">
+            <div class="section-header">
+                <h2 class="section-title">Filtros</h2>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="filtroFecha" class="form-label">Fecha</label>
+                    <input type="date" id="filtroFecha" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="filtroEstado" class="form-label">Estado</label>
+                    <select id="filtroEstado" class="form-control">
+                        <option value="">Todos</option>
+                        <option value="PENDIENTE">Pendiente</option>
+                        <option value="CONFIRMADA">Confirmada</option>
+                        <option value="ATENDIDA">Atendida</option>
+                        <option value="NO_PRESENTADO">No Presentado</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Citas -->
+        <div class="content-section slide-up">
+            <div class="section-header">
+                <h2 class="section-title">Listado de Citas</h2>
+            </div>
+
+            <div id="citasContainer">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal para Actualizar Estado -->
+<div id="actualizarEstadoModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Actualizar Estado de Cita</h3>
+            <button class="modal-close" onclick="cerrarModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="citaDetalles"></div>
+
+            <div class="form-group">
+                <label for="nuevoEstado" class="form-label">Nuevo Estado *</label>
+                <select id="nuevoEstado" class="form-control" required>
+                    <option value="">Seleccione un estado...</option>
+                    <option value="ATENDIDA">✅ Atendida</option>
+                    <option value="NO_PRESENTADO">❌ No Se Presentó</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="observaciones" class="form-label">Observaciones</label>
+                <textarea id="observaciones" class="form-control" rows="3"
+                          placeholder="Ingrese observaciones adicionales (opcional)"></textarea>
+                <small class="form-text">Máximo 500 caracteres</small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn btn-success" id="confirmarActualizacion">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--primary-blue);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #999;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.cita-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: box-shadow 0.3s;
+}
+
+.cita-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cita-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.cita-fecha {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-blue);
+}
+
+.cita-body {
+    margin-bottom: 12px;
+}
+
+.cita-info {
+    margin: 8px 0;
+    display: flex;
+    gap: 8px;
+}
+
+.cita-info strong {
+    min-width: 120px;
+}
+
+.cita-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+</style>
+
+<script src="/js/main.js"></script>
+<script src="/js/utils/auth-guard.js"></script>
+<script src="/js/medico/citas.js"></script>
+</body>
+</html>

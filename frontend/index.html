@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Reserva de Consultas Médicas - Universidad Nacional de Ingeniería">
+    <meta name="author" content="Franz Joe Inga Champi">
+    <title>Sistema de Reserva de Consultas Médicas | UNI</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">🏥</span>
+                        <span>Sistema de Consultas Médicas</span>
+                    </a>
+                    <nav>
+                        <ul class="nav-menu">
+                            <li><a href="#inicio" class="nav-link">🏠 Inicio</a></li>
+                            <li><a href="#servicios" class="nav-link">📋 Servicios</a></li>
+                            <li><a href="#especialidades" class="nav-link">👨‍⚕️ Especialidades</a></li>
+                            <li><a href="#contacto" class="nav-link">📞 Contacto</a></li>
+                        </ul>
+                    </nav>
+                    <div class="nav-buttons">
+                        <a href="pages/login.html" class="btn btn-secondary btn-sm">🔐 Iniciar Sesión</a>
+                        <a href="pages/paciente/registro.html" class="btn btn-primary btn-sm">✏️ Registrarse</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" id="inicio">
+            <div class="container">
+                <!-- Hero Section -->
+                <div class="hero fade-in">
+                    <h1 class="hero-title">🏥 Bienvenido al Sistema de Consultas Médicas</h1>
+                    <p class="hero-subtitle">Reserve su cita médica de forma rápida, fácil y segura</p>
+                    
+                    <!-- Hero Image Placeholder -->
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 350px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-xl);">
+                        <div style="text-align: center;">
+                            <div style="font-size: 100px; margin-bottom: 20px;">👨‍⚕️👩‍⚕️</div>
+                            <div style="font-size: 28px; font-weight: 700;">Atención Médica de Calidad</div>
+                            <div style="font-size: 18px; margin-top: 10px; opacity: 0.9;">Universidad Nacional de Ingeniería</div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Section -->
+                    <div style="background: linear-gradient(135deg, var(--primary-blue) 0%, var(--info-blue) 100%); padding: var(--spacing-xl); border-radius: var(--radius-xl); color: var(--white); margin: var(--spacing-2xl) 0; text-align: center; box-shadow: var(--shadow-lg);">
+                        <h2 style="font-size: 28px; margin-bottom: var(--spacing-md); color: white;">¿Primera vez en el sistema?</h2>
+                        <p style="font-size: 18px; margin-bottom: var(--spacing-lg); opacity: 0.95;">Regístrese ahora y acceda a todos nuestros servicios médicos</p>
+                        <a href="pages/paciente/registro.html" class="btn btn-success btn-lg" style="background-color: white; color: var(--primary-blue); font-weight: 700; box-shadow: var(--shadow-lg);">
+                            ✏️ REGISTRARSE COMO PACIENTE
+                        </a>
+                        <p style="margin-top: var(--spacing-md); font-size: 16px;">
+                            ¿Ya tiene cuenta? 
+                            <a href="pages/login.html" style="color: white; text-decoration: underline; font-weight: 600;">Iniciar Sesión aquí</a>
+                        </p>
+                    </div>
+
+                    <!-- Features Grid -->
+                    <div class="features" id="servicios">
+                        <div class="feature-card slide-up" style="animation-delay: 0.1s;">
+                            <div class="feature-icon">✅</div>
+                            <h3 class="feature-title">Fácil de Usar</h3>
+                            <p class="text-muted">Interfaz intuitiva y amigable para todos los usuarios</p>
+                        </div>
+                        <div class="feature-card slide-up" style="animation-delay: 0.2s;">
+                            <div class="feature-icon">⚡</div>
+                            <h3 class="feature-title">Rápido y Eficiente</h3>
+                            <p class="text-muted">Reserve su cita en menos de 5 minutos</p>
+                        </div>
+                        <div class="feature-card slide-up" style="animation-delay: 0.3s;">
+                            <div class="feature-icon">🔒</div>
+                            <h3 class="feature-title">Seguro y Confiable</h3>
+                            <p class="text-muted">Sus datos están protegidos con encriptación</p>
+                        </div>
+                        <div class="feature-card slide-up" style="animation-delay: 0.4s;">
+                            <div class="feature-icon">📧</div>
+                            <h3 class="feature-title">Notificaciones</h3>
+                            <p class="text-muted">Reciba recordatorios por email de sus citas</p>
+                        </div>
+                        <div class="feature-card slide-up" style="animation-delay: 0.5s;">
+                            <div class="feature-icon">📊</div>
+                            <h3 class="feature-title">Historial Completo</h3>
+                            <p class="text-muted">Acceda a su historial de citas en cualquier momento</p>
+                        </div>
+                        <div class="feature-card slide-up" style="animation-delay: 0.6s;">
+                            <div class="feature-icon">🏥</div>
+                            <h3 class="feature-title">Múltiples Especialidades</h3>
+                            <p class="text-muted">Encuentre al especialista que necesita</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Especialidades Section -->
+                <section id="especialidades" style="margin-top: var(--spacing-3xl);">
+                    <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: var(--spacing-xl); color: var(--primary-blue);">
+                        🩺 Nuestras Especialidades Médicas
+                    </h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg);">
+                        <div class="card" style="text-align: center; padding: var(--spacing-lg);">
+                            <div style="font-size: 3rem; margin-bottom: var(--spacing-sm);">❤️</div>
+                            <h4>Cardiología</h4>
+                            <p class="text-muted text-small">Salud del corazón</p>
+                        </div>
+                        <div class="card" style="text-align: center; padding: var(--spacing-lg);">
+                            <div style="font-size: 3rem; margin-bottom: var(--spacing-sm);">🧠</div>
+                            <h4>Neurología</h4>
+                            <p class="text-muted text-small">Sistema nervioso</p>
+                        </div>
+                        <div class="card" style="text-align: center; padding: var(--spacing-lg);">
+                            <div style="font-size: 3rem; margin-bottom: var(--spacing-sm);">👶</div>
+                            <h4>Pediatría</h4>
+                            <p class="text-muted text-small">Salud infantil</p>
+                        </div>
+                        <div class="card" style="text-align: center; padding: var(--spacing-lg);">
+                            <div style="font-size: 3rem; margin-bottom: var(--spacing-sm);">👩</div>
+                            <h4>Ginecología</h4>
+                            <p class="text-muted text-small">Salud femenina</p>
+                        </div>
+                        <div class="card" style="text-align: center; padding: var(--spacing-lg);">
+                            <div style="font-size: 3rem; margin-bottom: var(--spacing-sm);">🦴</div>
+                            <h4>Traumatología</h4>
+                            <p class="text-muted text-small">Huesos y articulaciones</p>
+                        </div>
+                        <div class="card" style="text-align: center; padding: var(--spacing-lg);">
+                            <div style="font-size: 3rem; margin-bottom: var(--spacing-sm);">👁️</div>
+                            <h4>Oftalmología</h4>
+                            <p class="text-muted text-small">Salud visual</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Como Funciona Section -->
+                <section style="margin-top: var(--spacing-3xl); text-align: center;">
+                    <h2 style="font-size: 2.5rem; margin-bottom: var(--spacing-xl); color: var(--primary-blue);">
+                        📝 ¿Cómo Funciona?
+                    </h2>
+                    
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="card" style="text-align: center; padding: var(--spacing-xl);">
+                                <div style="width: 60px; height: 60px; background: var(--primary-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; margin: 0 auto var(--spacing-md);">1</div>
+                                <h4>Regístrese</h4>
+                                <p class="text-muted">Cree su cuenta de paciente con sus datos personales</p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card" style="text-align: center; padding: var(--spacing-xl);">
+                                <div style="width: 60px; height: 60px; background: var(--primary-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; margin: 0 auto var(--spacing-md);">2</div>
+                                <h4>Busque Médico</h4>
+                                <p class="text-muted">Encuentre el especialista que necesita</p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card" style="text-align: center; padding: var(--spacing-xl);">
+                                <div style="width: 60px; height: 60px; background: var(--primary-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; margin: 0 auto var(--spacing-md);">3</div>
+                                <h4>Reserve Cita</h4>
+                                <p class="text-muted">Seleccione fecha y hora disponible</p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card" style="text-align: center; padding: var(--spacing-xl);">
+                                <div style="width: 60px; height: 60px; background: var(--primary-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; margin: 0 auto var(--spacing-md);">4</div>
+                                <h4>Asista a su Cita</h4>
+                                <p class="text-muted">Reciba notificación y asista puntualmente</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact Section -->
+                <section id="contacto" style="margin-top: var(--spacing-3xl); text-align: center; padding: var(--spacing-2xl); background: var(--gray-100); border-radius: var(--radius-xl);">
+                    <h2 style="font-size: 2.5rem; margin-bottom: var(--spacing-lg);">📞 ¿Necesita Ayuda?</h2>
+                    <p style="font-size: 1.125rem; margin-bottom: var(--spacing-xl); color: var(--gray-600);">
+                        Nuestro equipo está disponible para asistirle
+                    </p>
+                    <div style="display: flex; justify-content: center; gap: var(--spacing-xl); flex-wrap: wrap;">
+                        <div>
+                            <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">📧</div>
+                            <strong>Email:</strong><br>
+                            <a href="mailto:franz.inga.c@uni.edu.pe">franz.inga.c@uni.edu.pe</a>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">📱</div>
+                            <strong>Teléfono:</strong><br>
+                            <a href="tel:+51999999999">(+51) 999 999 999</a>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🏢</div>
+                            <strong>Dirección:</strong><br>
+                            Universidad Nacional de Ingeniería
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p class="footer-text">
+                    © 2025 Sistema de Reserva de Consultas Médicas | 
+                    Universidad Nacional de Ingeniería (UNI) | 
+                    Desarrollado por Franz Joe Inga Champi
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Horarios | Sistema de Consultas Médicas</title>
+    <link rel="stylesheet" href="/css/design-system.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/layouts.css">
+    <style>
+        .dashboard-grid{display:grid;grid-template-columns:250px 1fr;min-height:100vh;background-color:var(--bg-secondary)}.dashboard-sidebar{background-color:white;box-shadow:var(--shadow-md);padding:var(--space-6);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}.sidebar-brand{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-8);padding-bottom:var(--space-6);border-bottom:2px solid var(--border-light)}.sidebar-brand-icon{font-size:var(--text-4xl)}.sidebar-brand-text{font-size:var(--text-lg);font-weight:700;color:var(--primary-500)}.sidebar-user{background-color:var(--primary-50);padding:var(--space-4);border-radius:var(--radius-lg);margin-bottom:var(--space-6)}.sidebar-user-name{font-weight:700;color:var(--text-primary);margin-bottom:var(--space-1)}.sidebar-user-role{font-size:var(--text-sm);color:var(--text-secondary)}.sidebar-nav{flex:1}.sidebar-nav-item{list-style:none;margin-bottom:var(--space-2)}.sidebar-nav-link{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);color:var(--text-secondary);text-decoration:none;border-radius:var(--radius-lg);font-weight:500;transition:all var(--transition-fast)}.sidebar-nav-link:hover{background-color:var(--primary-50);color:var(--primary-600)}.sidebar-nav-link.active{background-color:var(--primary-500);color:white}.sidebar-nav-icon{font-size:var(--text-xl)}.sidebar-footer{padding-top:var(--space-6);border-top:2px solid var(--border-light)}.dashboard-main{padding:var(--space-8);overflow-y:auto}.dashboard-header{margin-bottom:var(--space-8)}.dashboard-title{font-size:var(--text-3xl);font-weight:700;color:var(--text-primary);margin-bottom:var(--space-2)}.dashboard-subtitle{font-size:var(--text-lg);color:var(--text-secondary)}.horarios-grid{display:grid;gap:var(--space-4)}.day-card{background-color:white;border-radius:var(--radius-xl);padding:var(--space-5);box-shadow:var(--shadow-sm)}.day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:2px solid var(--border-light)}.day-name{font-size:var(--text-xl);font-weight:700;color:var(--text-primary)}.time-slots{display:grid;gap:var(--space-3)}.time-slot{display:flex;justify-content:space-between;align-items:center;padding:var(--space-3);background-color:var(--gray-50);border-radius:var(--radius-lg);border:2px solid var(--border-light)}.time-info{display:flex;gap:var(--space-4);align-items:center}.time-label{font-weight:600;color:var(--text-primary)}.consultorio-label{color:var(--text-secondary);font-size:var(--text-sm)}.slot-actions{display:flex;gap:var(--space-2)}.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}.modal-overlay.active{display:flex}.modal-content{background-color:white;border-radius:var(--radius-2xl);padding:var(--space-6);max-width:500px;width:90%}.modal-header{margin-bottom:var(--space-4)}.modal-title{font-size:var(--text-2xl);font-weight:700;color:var(--text-primary)}.modal-footer{display:flex;gap:var(--space-3);margin-top:var(--space-6)}@media (max-width:768px){.dashboard-grid{grid-template-columns:1fr}.dashboard-sidebar{display:none}}
+    </style>
+</head>
+<body>
+    <div class="dashboard-grid">
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-brand"><span class="sidebar-brand-icon">🏥</span><span class="sidebar-brand-text">MediConsultas</span></div>
+            <div class="sidebar-user"><div class="sidebar-user-name" id="userName">Cargando...</div><div class="sidebar-user-role">Médico</div></div>
+            <nav class="sidebar-nav">
+                <ul style="list-style:none;padding:0;margin:0">
+                    <li class="sidebar-nav-item"><a href="/pages/medico/dashboard.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">🏠</span><span>Dashboard</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/medico/agenda.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">📅</span><span>Agenda</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/medico/horarios.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon">🕐</span><span>Horarios</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/medico/pacientes.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">👥</span><span>Pacientes</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/medico/perfil.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">👤</span><span>Mi Perfil</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer"><button class="btn btn-danger btn-block" id="logoutBtn"><span>🚪</span><span>Cerrar Sesión</span></button></div>
+        </aside>
+        <main class="dashboard-main">
+            <div class="dashboard-header animate-fade-in"><h1 class="dashboard-title">Mis Horarios de Atención</h1><p class="dashboard-subtitle">Configure sus horarios de consulta para cada día de la semana</p></div>
+            <div class="horarios-grid animate-slide-up">
+                <div id="horariosContent"><div class="spinner-container"><div class="spinner"></div><p>Cargando horarios...</p></div></div>
+            </div>
+        </main>
+    </div>
+    <div class="modal-overlay" id="formModal">
+        <div class="modal-content">
+            <div class="modal-header"><h3 class="modal-title" id="modalTitle">Nuevo Horario</h3></div>
+            <div class="modal-body">
+                <form id="horarioForm">
+                    <input type="hidden" id="horarioId">
+                    <input type="hidden" id="diaSemana">
+                    <div class="form-group"><label for="horaInicio" class="form-label form-label-required">Hora Inicio</label><input type="time" id="horaInicio" class="form-control" required></div>
+                    <div class="form-group"><label for="horaFin" class="form-label form-label-required">Hora Fin</label><input type="time" id="horaFin" class="form-control" required></div>
+                    <div class="form-group"><label for="consultorio" class="form-label form-label-required">Consultorio</label><select id="consultorio" class="form-control" required><option value="">Seleccione un consultorio</option></select></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="cancelBtn">Cancelar</button>
+                <button class="btn btn-primary" id="saveBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header"><h3 class="modal-title">Eliminar Horario</h3></div>
+            <div class="modal-body"><p id="deleteMessage">¿Está seguro que desea eliminar este horario?</p></div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="cancelDeleteBtn">Cancelar</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+    <script src="/js/main.js"></script>
+    <script src="/js/utils/auth-guard.js"></script>
+    <script>
+        let horarios=[],consultorios=[],selectedId=null,selectedDay=null;const DIAS=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];document.addEventListener('DOMContentLoaded',async()=>{const user=getCurrentUser();if(!user||user.rol!=='MEDICO'){window.location.href='/pages/auth/login.html';return}document.getElementById('userName').textContent=user.username;document.getElementById('logoutBtn').addEventListener('click',()=>{logout();window.location.href='/pages/auth/login.html'});document.getElementById('cancelBtn').addEventListener('click',closeFormModal);document.getElementById('saveBtn').addEventListener('click',saveHorario);document.getElementById('cancelDeleteBtn').addEventListener('click',closeDeleteModal);document.getElementById('confirmDeleteBtn').addEventListener('click',confirmDelete);await loadConsultorios();await loadHorarios()});async function loadConsultorios(){const token=getToken();try{const response=await fetch(`${API_BASE_URL}/consultorios`,{headers:{'Authorization':`Bearer ${token}`}});consultorios=await response.json();const select=document.getElementById('consultorio');select.innerHTML='<option value="">Seleccione un consultorio</option>'+consultorios.map(c=>`<option value="${c.idConsultorio}">Piso ${c.piso} - ${c.numero} (${c.especialidad||'General'})</option>`).join('')}catch(error){console.error('Error:',error)}}async function loadHorarios(){const user=getCurrentUser(),token=getToken(),container=document.getElementById('horariosContent');try{const response=await fetch(`${API_BASE_URL}/horarios/medico/${user.idReferencia}`,{headers:{'Authorization':`Bearer ${token}`}});horarios=await response.json();renderHorarios()}catch(error){console.error('Error:',error);container.innerHTML='<p style=\"text-align:center;color:var(--error-600)\">Error al cargar horarios</p>'}}function renderHorarios(){const container=document.getElementById('horariosContent');container.innerHTML=DIAS.map((dia,index)=>{const diaHorarios=horarios.filter(h=>h.diaSemana===index+1).sort((a,b)=>a.horaInicio.localeCompare(b.horaInicio));return`<div class=\"day-card\"><div class=\"day-header\"><h3 class=\"day-name\">${dia}</h3><button class=\"btn btn-sm btn-primary\" onclick=\"openAddModal(${index+1})\">➕ Agregar Horario</button></div><div class=\"time-slots\">${diaHorarios.length===0?'<p style=\"color:var(--text-secondary);text-align:center;padding:var(--space-4)\">Sin horarios configurados</p>':diaHorarios.map(h=>{const cons=consultorios.find(c=>c.idConsultorio===h.idConsultorio);return`<div class=\"time-slot\"><div class=\"time-info\"><span class=\"time-label\">🕐 ${h.horaInicio} - ${h.horaFin}</span><span class=\"consultorio-label\">🏥 ${cons?`Piso ${cons.piso} - ${cons.numero}`:'Consultorio '+h.idConsultorio}</span></div><div class=\"slot-actions\"><button class=\"btn btn-sm btn-ghost\" onclick=\"openEditModal(${h.idHorario})\">✏️</button><button class=\"btn btn-sm btn-danger\" onclick=\"openDeleteModal(${h.idHorario})\">🗑️</button></div></div>`}).join('')}</div></div>`}).join('')}function openAddModal(dia){selectedId=null;selectedDay=dia;document.getElementById('modalTitle').textContent=`Nuevo Horario - ${DIAS[dia-1]}`;document.getElementById('horarioForm').reset();document.getElementById('horarioId').value='';document.getElementById('diaSemana').value=dia;document.getElementById('formModal').classList.add('active')}function openEditModal(id){const h=horarios.find(hor=>hor.idHorario===id);if(!h)return;selectedId=id;selectedDay=h.diaSemana;document.getElementById('modalTitle').textContent=`Editar Horario - ${DIAS[h.diaSemana-1]}`;document.getElementById('horarioId').value=id;document.getElementById('diaSemana').value=h.diaSemana;document.getElementById('horaInicio').value=h.horaInicio;document.getElementById('horaFin').value=h.horaFin;document.getElementById('consultorio').value=h.idConsultorio;document.getElementById('formModal').classList.add('active')}function closeFormModal(){document.getElementById('formModal').classList.remove('active');selectedId=null;selectedDay=null}async function saveHorario(){const form=document.getElementById('horarioForm');if(!form.checkValidity()){form.reportValidity();return}const horaInicio=document.getElementById('horaInicio').value,horaFin=document.getElementById('horaFin').value;if(horaInicio>=horaFin){alert('La hora de inicio debe ser menor a la hora de fin');return}const user=getCurrentUser(),data={idMedico:user.idReferencia,diaSemana:parseInt(document.getElementById('diaSemana').value),horaInicio:horaInicio,horaFin:horaFin,idConsultorio:parseInt(document.getElementById('consultorio').value)};const token=getToken();try{const url=selectedId?`${API_BASE_URL}/horarios/${selectedId}`:`${API_BASE_URL}/horarios`;const response=await fetch(url,{method:selectedId?'PUT':'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(data)});if(response.ok){alert(`Horario ${selectedId?'actualizado':'creado'} exitosamente`);closeFormModal();await loadHorarios()}else{const error=await response.json();alert(`Error: ${error.message||'No se pudo guardar el horario'}`)}}catch(error){console.error('Error:',error);alert('Error al conectar con el servidor')}}function openDeleteModal(id){selectedId=id;document.getElementById('deleteMessage').textContent='¿Está seguro que desea eliminar este horario?';document.getElementById('deleteModal').classList.add('active')}function closeDeleteModal(){document.getElementById('deleteModal').classList.remove('active');selectedId=null}async function confirmDelete(){const token=getToken();try{const response=await fetch(`${API_BASE_URL}/horarios/${selectedId}`,{method:'DELETE',headers:{'Authorization':`Bearer ${token}`}});if(response.ok){alert('Horario eliminado exitosamente');closeDeleteModal();await loadHorarios()}else{const error=await response.json();alert(`Error: ${error.message||'No se pudo eliminar el horario'}`)}}catch(error){console.error('Error:',error);alert('Error al conectar con el servidor')}}
+    </script>
+</body>
+</html>

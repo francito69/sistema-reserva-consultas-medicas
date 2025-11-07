@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Paciente | Sistema de Reservas Médicas</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .register-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .register-header {
+            background: linear-gradient(135deg, #2C5F2D 0%, #97BC62 100%);
+            padding: var(--spacing-2xl);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .register-header-icon {
+            font-size: 60px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .register-header h1 {
+            font-size: var(--font-size-3xl);
+            margin-bottom: var(--spacing-sm);
+            font-weight: 700;
+        }
+
+        .register-header p {
+            font-size: var(--font-size-base);
+            opacity: 0.9;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-xl) var(--spacing-2xl);
+            background: var(--gray-50);
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: var(--gray-300);
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            height: 2px;
+            background: var(--primary-green);
+            transform: translateY(-50%);
+            transition: width 0.4s ease;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 3px solid var(--gray-300);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: var(--font-size-lg);
+            color: var(--gray-500);
+            margin-bottom: var(--spacing-sm);
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: var(--primary-green);
+            border-color: var(--primary-green);
+            color: var(--white);
+            transform: scale(1.1);
+        }
+
+        .step.completed .step-circle {
+            background: var(--success-green);
+            border-color: var(--success-green);
+            color: var(--white);
+        }
+
+        .step-label {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .step.active .step-label {
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        /* Form Content */
+        .register-content {
+            padding: var(--spacing-2xl);
+        }
+
+        .form-step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .step-title {
+            font-size: var(--font-size-2xl);
+            color: var(--gray-800);
+            margin-bottom: var(--spacing-xs);
+            font-weight: 700;
+        }
+
+        .step-description {
+            color: var(--gray-600);
+            margin-bottom: var(--spacing-xl);
+            font-size: var(--font-size-base);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: var(--font-size-sm);
+        }
+
+        .form-label .required {
+            color: var(--error-red);
+        }
+
+        .form-input-group {
+            position: relative;
+        }
+
+        .form-input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.1);
+        }
+
+        .form-input.error,
+        .form-select.error {
+            border-color: var(--error-red);
+        }
+
+        .form-error {
+            display: none;
+            color: var(--error-red);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-xs);
+        }
+
+        .form-error.show {
+            display: block;
+        }
+
+        .form-hint {
+            font-size: var(--font-size-xs);
+            color: var(--gray-500);
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2C5F2D 0%, #97BC62 100%);
+            color: var(--white);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(44, 95, 45, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid var(--white);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Alert */
+        .alert {
+            padding: 12px 15px;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+            display: none;
+            font-size: var(--font-size-sm);
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .alert-error {
+            background: var(--error-red-light);
+            color: var(--error-red);
+            border-left: 4px solid var(--error-red);
+        }
+
+        .alert-success {
+            background: var(--success-green-light);
+            color: var(--success-green);
+            border-left: 4px solid var(--success-green);
+        }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-600);
+            font-size: var(--font-size-sm);
+        }
+
+        .login-link a {
+            color: var(--primary-green);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Success Modal */
+        .success-modal {
+            display: none;
+            text-align: center;
+            padding: var(--spacing-2xl);
+        }
+
+        .success-modal.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-icon {
+            font-size: 100px;
+            margin-bottom: var(--spacing-lg);
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-title {
+            font-size: var(--font-size-3xl);
+            color: var(--success-green);
+            margin-bottom: var(--spacing-md);
+            font-weight: 700;
+        }
+
+        .success-message {
+            font-size: var(--font-size-lg);
+            color: var(--gray-600);
+            margin-bottom: var(--spacing-2xl);
+            line-height: 1.6;
+        }
+
+        .password-strength {
+            margin-top: var(--spacing-sm);
+        }
+
+        .password-strength-bar {
+            height: 4px;
+            background: var(--gray-200);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .password-strength-fill {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+        }
+
+        .password-strength-fill.weak {
+            width: 33%;
+            background: var(--error-red);
+        }
+
+        .password-strength-fill.medium {
+            width: 66%;
+            background: var(--warning-yellow);
+        }
+
+        .password-strength-fill.strong {
+            width: 100%;
+            background: var(--success-green);
+        }
+
+        .password-strength-text {
+            font-size: var(--font-size-xs);
+            color: var(--gray-600);
+        }
+
+        @media (max-width: 768px) {
+            .register-container {
+                margin: 0;
+                border-radius: 0;
+            }
+
+            .progress-steps {
+                padding: var(--spacing-lg);
+            }
+
+            .step-circle {
+                width: 40px;
+                height: 40px;
+                font-size: var(--font-size-base);
+            }
+
+            .step-label {
+                font-size: var(--font-size-xs);
+            }
+
+            .register-content {
+                padding: var(--spacing-lg);
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-secondary {
+                order: 2;
+            }
+
+            .btn-primary {
+                order: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <!-- Header -->
+        <div class="register-header">
+            <div class="register-header-icon">✏️</div>
+            <h1>Registro de Paciente</h1>
+            <p>Complete el formulario para crear su cuenta</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+            <div class="progress-line" id="progressLine"></div>
+            
+            <div class="step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Datos Personales</div>
+            </div>
+            
+            <div class="step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Información de Contacto</div>
+            </div>
+            
+            <div class="step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Credenciales</div>
+            </div>
+        </div>
+
+        <!-- Form Content -->
+        <div class="register-content">
+            <!-- Alert Messages -->
+            <div id="alertMessage" class="alert">
+                <span id="alertText"></span>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registerForm" novalidate>
+                
+                <!-- PASO 1: Datos Personales -->
+                <div class="form-step active" data-step="1">
+                    <h2 class="step-title">📋 Datos Personales</h2>
+                    <p class="step-description">Ingrese su información personal básica</p>
+
+                    <!-- DNI -->
+                    <div class="form-group">
+                        <label for="dni" class="form-label">
+                            DNI <span class="required">*</span>
+                        </label>
+                        <div class="form-input-group">
+                            <span class="form-input-icon">🆔</span>
+                            <input 
+                                type="text" 
+                                id="dni" 
+                                name="dni" 
+                                class="form-input" 
+                                placeholder="12345678"
+                                maxlength="8"
+                                required
+                            >
+                        </div>
+                        <span class="form-error" id="dniError">Ingrese un DNI válido de 8 dígitos</span>
+                    </div>
+
+                    <!-- Nombres y Apellidos -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombres" class="form-label">
+                                Nombres <span class="required">*</span>
+                            </label>
+                            <div class="form-input-group">
+                                <span class="form-input-icon">👤</span>
+                                <input 
+                                    type="text" 
+                                    id="nombres" 
+                                    name="nombres" 
+                                    class="form-input" 
+                                    placeholder="Juan Carlos"
+                                    required
+                                >
+                            </div>
+                            <span class="form-error" id="nombresError">Ingrese sus nombres</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="apellidos" class="form-label">
+                                Apellidos <span class="required">*</span>
+                            </label>
+                            <div class="form-input-group">
+                                <span class="form-input-icon">👤</span>
+                                <input 
+                                    type="text" 
+                                    id="apellidos" 
+                                    name="apellidos" 
+                                    class="form-input" 
+                                    placeholder="Pérez García"
+                                    required
+                                >
+                            </div>
+                            <span class="form-error" id="apellidosError">Ingrese sus apellidos</span>
+                        </div>
+                    </div>
+
+                    <!-- Fecha Nacimiento y Género -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fechaNacimiento" class="form-label">
+                                Fecha de Nacimiento <span class="required">*</span>
+                            </label>
+                            <div class="form-input-group">
+                                <span class="form-input-icon">📅</span>
+                                <input 
+                                    type="date" 
+                                    id="fechaNacimiento" 
+                                    name="fechaNacimiento" 
+                                    class="form-input" 
+                                    required
+                                >
+                            </div>
+                            <span class="form-error" id="fechaNacimientoError">Seleccione su fecha de nacimiento</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="genero" class="form-label">
+                                Género <span class="required">*</span>
+                            </label>
+                            <div class="form-input-group">
+                                <span class="form-input-icon">⚧</span>
+                                <select id="genero" name="genero" class="form-select" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                    <option value="O">Otro</option>
+                                </select>
+                            </div>
+                            <span class="form-error" id="generoError">Seleccione su género</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PASO 2: Información de Contacto -->
+                <div class="form-step" data-step="2">
+                    <h2 class="step-title">📞 Información de Contacto</h2>
+                    <p class="step-description">¿Cómo podemos contactarte?</p>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            Email <span class="required">*</span>
+                        </label>
+                        <div class="form-input-group">
+                            <span class="form-input-icon">📧</span>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-input" 
+                                placeholder="ejemplo@correo.com"
+                                required
+                            >
+                        </div>
+                        <span class="form-error" id="emailError">Ingrese un email válido</span>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="form-group">
+                        <label for="telefono" class="form-label">
+                            Teléfono <span class="required">*</span>
+                        </label>
+                        <div class="form-input-group">
+                            <span class="form-input-icon">📱</span>
+                            <input 
+                                type="tel" 
+                                id="telefono" 
+                                name="telefono" 
+                                class="form-input" 
+                                placeholder="987654321"
+                                maxlength="9"
+                                required
+                            >
+                        </div>
+                        <span class="form-hint">Ingrese su número celular de 9 dígitos</span>
+                        <span class="form-error" id="telefonoError">Ingrese un teléfono válido de 9 dígitos</span>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="form-group">
+                        <label for="direccion" class="form-label">
+                            Dirección <span class="required">*</span>
+                        </label>
+                        <div class="form-input-group">
+                            <span class="form-input-icon">🏠</span>
+                            <input 
+                                type="text" 
+                                id="direccion" 
+                                name="direccion" 
+                                class="form-input" 
+                                placeholder="Av. Ejemplo 123, Lima"
+                                required
+                            >
+                        </div>
+                        <span class="form-error" id="direccionError">Ingrese su dirección</span>
+                    </div>
+
+                    <!-- Distrito y Provincia -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="distrito" class="form-label">
+                                Distrito <span class="required">*</span>
+                            </label>
+                            <div class="form-input-group">
+                                <span class="form-input-icon">📍</span>
+                                <input 
+                                    type="text" 
+                                    id="distrito" 
+                                    name="distrito" 
+                                    class="form-input" 
+                                    placeholder="San Isidro"
+                                    required
+                                >
+                            </div>
+                            <span class="form-error" id="distritoError">Ingrese su distrito</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="provincia" class="form-label">
+                                Provincia <span class="required">*</span>
+                            </label>
+                            <div class="form-input-group">
+                                <span class="form-input-icon">🗺️</span>
+                                <input 
+                                    type="text" 
+                                    id="provincia" 
+                                    name="provincia" 
+                                    class="form-input" 
+                                    placeholder="Lima"
+                                    required
+                                >
+                            </div>
+                            <span class="form-error" id="provinciaError">Ingrese su provincia</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PASO 3: Credenciales -->
+                <div class="form-step" data-step="3">
+                    <h2 class="step-title">🔐 Credenciales de Acceso</h2>
+                    <p class="step-description">Cree su usuario y contraseña</p>
+
+                    <!-- Usuario -->
+                    <div class="form-group">
+                        <label for="usuario" class="form-label">
+                            Nombre de Usuario <span class="required">*</span>
+                        </label>
+                        <div class="form-input-group">
+                            <span class="form-input-icon">👤</span>
+                            <input 
+                                type="text" 
+                                id="usuario" 
+                                name="usuario" 
+                                class="form-input" 
+                                placeholder="juanperez"
+                                required
+                            >
+                        </div>
+                        <span class="form-hint">Mínimo 4 caracteres, solo letras y números</span>
+                        <span class="form-error" id="usuarioError">Ingrese un usuario válido</span>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            Contraseña <span class="required">*</span>
+                        </label>
+                        <div class="form-input-group">
+                            <span class="form-input-icon">🔒</span>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Ingrese una contraseña segura"
+                                required
+                            >
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-bar">
+                                <div class="password-strength-fill" id="passwordStrengthFill"></div>
+                            </div>
+                            <div class="password-strength-text" id="passwordStrengthText">
+                                Mínimo 8 caracteres, incluya mayúsculas, minúsculas y números
+                            </div>
+                        </div>
+                        <span class="form-error" id="passwordError">La contraseña no cumple los requisitos</span>
+                    </div>
+
+                    <!-- Confirmar Contraseña -->
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">
+                            Confirmar Contraseña <span class="required">*</span>
+                        </label>
+                        <div class="form-input-group">
+                            <span class="form-input-icon">🔒</span>
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                class="form-input" 
+                                placeholder="Repita su contraseña"
+                                required
+                            >
+                        </div>
+                        <span class="form-error" id="confirmPasswordError">Las contraseñas no coinciden</span>
+                    </div>
+
+                    <!-- Términos y Condiciones -->
+                    <div class="form-group">
+                        <label class="form-checkbox" style="display: flex; align-items: start; gap: 10px;">
+                            <input type="checkbox" id="terminos" name="terminos" required style="margin-top: 4px;">
+                            <span style="font-size: var(--font-size-sm); color: var(--gray-700);">
+                                Acepto los <a href="#" style="color: var(--primary-green);">términos y condiciones</a> 
+                                y la <a href="#" style="color: var(--primary-green);">política de privacidad</a>
+                                <span class="required">*</span>
+                            </span>
+                        </label>
+                        <span class="form-error" id="terminosError">Debe aceptar los términos y condiciones</span>
+                    </div>
+                </div>
+
+                <!-- Success Modal -->
+                <div class="success-modal" id="successModal">
+                    <div class="success-icon">✅</div>
+                    <h2 class="success-title">¡Registro Exitoso!</h2>
+                    <p class="success-message">
+                        Su cuenta ha sido creada correctamente.<br>
+                        Ya puede iniciar sesión en el sistema.
+                    </p>
+                    <a href="login.html" class="btn btn-primary" style="text-decoration: none; display: inline-flex;">
+                        <span class="btn-text">🔓 Ir a Iniciar Sesión</span>
+                    </a>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions" id="formActions">
+                    <button type="button" class="btn btn-secondary" id="btnPrevious">
+                        ← Anterior
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnNext">
+                        <span class="spinner"></span>
+                        <span class="btn-text">Siguiente →</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Login Link -->
+            <div class="login-link">
+                ¿Ya tienes cuenta? 
+                <a href="login.html">Inicia sesión aquí</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../js/config.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/api/apiClient.js"></script>
+    <script src="../../js/auth/registro.js"></script>
+</body>
+</html>

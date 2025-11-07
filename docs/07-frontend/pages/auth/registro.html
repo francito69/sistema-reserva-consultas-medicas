@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Registro de Paciente - Sistema de Reserva de Consultas Médicas">
+    <title>Registro de Paciente - Sistema de Consultas Médicas</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/design-system.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/layouts.css">
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <div class="auth-card" style="max-width: 800px;">
+                <!-- Logo y header -->
+                <div class="auth-logo">
+                    <div class="auth-logo-icon">🏥</div>
+                    <a href="/" style="color: var(--text-secondary); font-size: var(--text-sm); text-decoration: none;">
+                        ← Volver al inicio
+                    </a>
+                </div>
+
+                <!-- Título -->
+                <h1 class="auth-title">Registro de Paciente</h1>
+                <p class="auth-subtitle">
+                    Complete el formulario para crear su cuenta y comenzar a reservar citas
+                </p>
+
+                <!-- Alerta de mensaje -->
+                <div id="alertMessage" style="display: none;"></div>
+
+                <!-- Formulario -->
+                <form id="registroForm" class="auth-form" novalidate>
+                    <!-- Información Personal -->
+                    <div style="margin-bottom: var(--space-6);">
+                        <h3 style="font-size: var(--text-lg); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-4);">
+                            📋 Información Personal
+                        </h3>
+
+                        <!-- DNI y Fecha de Nacimiento -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+                            <div class="form-group">
+                                <label for="dni" class="form-label form-label-required">DNI</label>
+                                <input
+                                    type="text"
+                                    id="dni"
+                                    name="dni"
+                                    class="form-control"
+                                    placeholder="12345678"
+                                    maxlength="8"
+                                    required
+                                    autocomplete="off"
+                                >
+                                <span class="form-error" id="dniError"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fechaNacimiento" class="form-label form-label-required">Fecha de Nacimiento</label>
+                                <input
+                                    type="date"
+                                    id="fechaNacimiento"
+                                    name="fechaNacimiento"
+                                    class="form-control"
+                                    required
+                                >
+                                <span class="form-error" id="fechaNacimientoError"></span>
+                            </div>
+                        </div>
+
+                        <!-- Nombres -->
+                        <div class="form-group">
+                            <label for="nombres" class="form-label form-label-required">Nombres</label>
+                            <input
+                                type="text"
+                                id="nombres"
+                                name="nombres"
+                                class="form-control"
+                                placeholder="Juan Carlos"
+                                required
+                                autocomplete="given-name"
+                            >
+                            <span class="form-error" id="nombresError"></span>
+                        </div>
+
+                        <!-- Apellidos -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+                            <div class="form-group">
+                                <label for="apellidoPaterno" class="form-label form-label-required">Apellido Paterno</label>
+                                <input
+                                    type="text"
+                                    id="apellidoPaterno"
+                                    name="apellidoPaterno"
+                                    class="form-control"
+                                    placeholder="García"
+                                    required
+                                    autocomplete="family-name"
+                                >
+                                <span class="form-error" id="apellidoPaternoError"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="apellidoMaterno" class="form-label form-label-required">Apellido Materno</label>
+                                <input
+                                    type="text"
+                                    id="apellidoMaterno"
+                                    name="apellidoMaterno"
+                                    class="form-control"
+                                    placeholder="López"
+                                    required
+                                >
+                                <span class="form-error" id="apellidoMaternoError"></span>
+                            </div>
+                        </div>
+
+                        <!-- Género -->
+                        <div class="form-group">
+                            <label for="genero" class="form-label form-label-required">Género</label>
+                            <select id="genero" name="genero" class="form-control" required>
+                                <option value="">Seleccione su género</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                            <span class="form-error" id="generoError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Información de Contacto -->
+                    <div style="margin-bottom: var(--space-6);">
+                        <h3 style="font-size: var(--text-lg); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-4);">
+                            📞 Información de Contacto
+                        </h3>
+
+                        <!-- Email y Teléfono -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+                            <div class="form-group">
+                                <label for="email" class="form-label form-label-required">Email</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    class="form-control"
+                                    placeholder="correo@ejemplo.com"
+                                    required
+                                    autocomplete="email"
+                                >
+                                <span class="form-error" id="emailError"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="telefono" class="form-label form-label-required">Teléfono</label>
+                                <input
+                                    type="tel"
+                                    id="telefono"
+                                    name="telefono"
+                                    class="form-control"
+                                    placeholder="987654321"
+                                    maxlength="9"
+                                    required
+                                    autocomplete="tel"
+                                >
+                                <span class="form-error" id="telefonoError"></span>
+                            </div>
+                        </div>
+
+                        <!-- Dirección -->
+                        <div class="form-group">
+                            <label for="direccion" class="form-label form-label-required">Dirección</label>
+                            <input
+                                type="text"
+                                id="direccion"
+                                name="direccion"
+                                class="form-control"
+                                placeholder="Av. Tupac Amaru 210, Rimac"
+                                required
+                                autocomplete="street-address"
+                            >
+                            <span class="form-error" id="direccionError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Credenciales de Acceso -->
+                    <div style="margin-bottom: var(--space-6);">
+                        <h3 style="font-size: var(--text-lg); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-4);">
+                            🔐 Credenciales de Acceso
+                        </h3>
+
+                        <!-- Nombre de Usuario -->
+                        <div class="form-group">
+                            <label for="nombreUsuario" class="form-label form-label-required">Nombre de Usuario</label>
+                            <input
+                                type="text"
+                                id="nombreUsuario"
+                                name="nombreUsuario"
+                                class="form-control"
+                                placeholder="usuario123"
+                                required
+                                autocomplete="username"
+                            >
+                            <span class="form-error" id="nombreUsuarioError"></span>
+                            <small style="display: block; margin-top: var(--space-1); font-size: var(--text-xs); color: var(--text-tertiary);">
+                                Mínimo 4 caracteres, solo letras y números
+                            </small>
+                        </div>
+
+                        <!-- Contraseña -->
+                        <div class="form-group">
+                            <label for="password" class="form-label form-label-required">Contraseña</label>
+                            <div style="position: relative;">
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    class="form-control"
+                                    placeholder="Ingrese una contraseña segura"
+                                    required
+                                    autocomplete="new-password"
+                                    style="padding-right: 3rem;"
+                                >
+                                <button
+                                    type="button"
+                                    id="togglePassword"
+                                    style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.25rem;"
+                                    aria-label="Mostrar/Ocultar contraseña"
+                                >
+                                    👁️
+                                </button>
+                            </div>
+                            <span class="form-error" id="passwordError"></span>
+
+                            <!-- Password Strength Indicator -->
+                            <div id="passwordStrength" style="display: none; margin-top: var(--space-2);">
+                                <div style="display: flex; gap: var(--space-1); margin-bottom: var(--space-1);">
+                                    <div class="password-strength-bar" id="strengthBar1"></div>
+                                    <div class="password-strength-bar" id="strengthBar2"></div>
+                                    <div class="password-strength-bar" id="strengthBar3"></div>
+                                    <div class="password-strength-bar" id="strengthBar4"></div>
+                                </div>
+                                <small id="strengthText" style="font-size: var(--text-xs);"></small>
+                            </div>
+
+                            <small style="display: block; margin-top: var(--space-1); font-size: var(--text-xs); color: var(--text-tertiary);">
+                                Mínimo 8 caracteres, debe incluir mayúsculas, minúsculas y números
+                            </small>
+                        </div>
+
+                        <!-- Confirmar Contraseña -->
+                        <div class="form-group">
+                            <label for="confirmPassword" class="form-label form-label-required">Confirmar Contraseña</label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                class="form-control"
+                                placeholder="Repita su contraseña"
+                                required
+                                autocomplete="new-password"
+                            >
+                            <span class="form-error" id="confirmPasswordError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Términos y Condiciones -->
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input type="checkbox" id="terminos" class="form-check-input" required>
+                            <label for="terminos" class="form-check-label">
+                                Acepto los <a href="/pages/public/terminos.html" target="_blank" style="color: var(--primary-500);">términos y condiciones</a> y la <a href="/pages/public/privacidad.html" target="_blank" style="color: var(--primary-500);">política de privacidad</a>
+                            </label>
+                        </div>
+                        <span class="form-error" id="terminosError"></span>
+                    </div>
+
+                    <!-- Submit button -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block btn-lg" id="registerButton">
+                            <span id="registerButtonText">Registrarse</span>
+                            <div class="spinner spinner-sm" id="registerSpinner" style="display: none; margin-left: auto;"></div>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Footer -->
+                <div class="auth-footer">
+                    <p class="auth-footer-text">
+                        ¿Ya tiene cuenta?
+                        <a href="/pages/auth/login.html" class="auth-footer-link">Inicie sesión aquí</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script>
+        // Estilos adicionales para la barra de fortaleza de contraseña
+        const style = document.createElement('style');
+        style.textContent = `
+            .password-strength-bar {
+                height: 4px;
+                flex: 1;
+                background-color: var(--gray-200);
+                border-radius: var(--radius-sm);
+                transition: background-color var(--transition-fast);
+            }
+            .password-strength-bar.active-weak {
+                background-color: var(--error-500);
+            }
+            .password-strength-bar.active-fair {
+                background-color: var(--warning-500);
+            }
+            .password-strength-bar.active-good {
+                background-color: var(--success-400);
+            }
+            .password-strength-bar.active-strong {
+                background-color: var(--success-600);
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    <script src="/js/auth/registro.js"></script>
+</body>
+</html>

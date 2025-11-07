@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Médicos | Sistema de Consultas Médicas</title>
+    <link rel="stylesheet" href="/css/design-system.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/layouts.css">
+    <style>
+        .dashboard-grid{display:grid;grid-template-columns:250px 1fr;min-height:100vh;background-color:var(--bg-secondary)}.dashboard-sidebar{background-color:white;box-shadow:var(--shadow-md);padding:var(--space-6);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}.sidebar-brand{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-8);padding-bottom:var(--space-6);border-bottom:2px solid var(--border-light)}.sidebar-brand-icon{font-size:var(--text-4xl)}.sidebar-brand-text{font-size:var(--text-lg);font-weight:700;color:var(--primary-500)}.sidebar-user{background-color:var(--primary-50);padding:var(--space-4);border-radius:var(--radius-lg);margin-bottom:var(--space-6)}.sidebar-user-name{font-weight:700;color:var(--text-primary);margin-bottom:var(--space-1)}.sidebar-user-role{font-size:var(--text-sm);color:var(--text-secondary)}.sidebar-nav{flex:1}.sidebar-nav-item{list-style:none;margin-bottom:var(--space-2)}.sidebar-nav-link{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);color:var(--text-secondary);text-decoration:none;border-radius:var(--radius-lg);font-weight:500;transition:all var(--transition-fast)}.sidebar-nav-link:hover{background-color:var(--primary-50);color:var(--primary-600)}.sidebar-nav-link.active{background-color:var(--primary-500);color:white}.sidebar-nav-icon{font-size:var(--text-xl)}.sidebar-footer{padding-top:var(--space-6);border-top:2px solid var(--border-light)}.dashboard-main{padding:var(--space-8);overflow-y:auto}.dashboard-header{margin-bottom:var(--space-8)}.dashboard-title{font-size:var(--text-3xl);font-weight:700;color:var(--text-primary);margin-bottom:var(--space-2)}.dashboard-subtitle{font-size:var(--text-lg);color:var(--text-secondary)}.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-6);background-color:white;padding:var(--space-4);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm);gap:var(--space-3)}.search-box{position:relative;flex:1;max-width:400px}.search-box input{width:100%;padding:var(--space-3) var(--space-4) var(--space-3) var(--space-10);border:2px solid var(--border-light);border-radius:var(--radius-lg);font-size:var(--text-base);transition:all var(--transition-fast)}.search-box input:focus{outline:none;border-color:var(--primary-400);box-shadow:0 0 0 3px var(--primary-100)}.search-icon{position:absolute;left:var(--space-3);top:50%;transform:translateY(-50%);font-size:var(--text-xl);color:var(--text-secondary)}.filter-select{padding:var(--space-3) var(--space-4);border:2px solid var(--border-light);border-radius:var(--radius-lg);font-size:var(--text-base);background-color:white}.table-container{background-color:white;border-radius:var(--radius-2xl);padding:var(--space-6);box-shadow:var(--shadow-sm)}.table{width:100%;border-collapse:collapse}.table thead{background-color:var(--gray-50);border-bottom:2px solid var(--border-light)}.table th{padding:var(--space-4);text-align:left;font-weight:700;color:var(--text-primary);font-size:var(--text-sm)}.table td{padding:var(--space-4);border-bottom:1px solid var(--border-light);color:var(--text-secondary)}.table tbody tr:hover{background-color:var(--gray-50)}.badge{display:inline-block;padding:var(--space-1) var(--space-3);border-radius:var(--radius-lg);font-size:var(--text-sm);font-weight:600}.badge-primary{background-color:var(--primary-100);color:var(--primary-700)}.action-buttons{display:flex;gap:var(--space-2)}.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}.modal-overlay.active{display:flex}.modal-content{background-color:white;border-radius:var(--radius-2xl);padding:var(--space-6);max-width:600px;width:90%;max-height:90vh;overflow-y:auto}.modal-header{margin-bottom:var(--space-4)}.modal-title{font-size:var(--text-2xl);font-weight:700;color:var(--text-primary)}.modal-footer{display:flex;gap:var(--space-3);margin-top:var(--space-6)}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}@media (max-width:768px){.dashboard-grid{grid-template-columns:1fr}.dashboard-sidebar{display:none}.toolbar{flex-direction:column;align-items:stretch}.search-box{max-width:100%}.form-row{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <div class="dashboard-grid">
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-brand"><span class="sidebar-brand-icon">🏥</span><span class="sidebar-brand-text">MediConsultas</span></div>
+            <div class="sidebar-user"><div class="sidebar-user-name" id="userName">Cargando...</div><div class="sidebar-user-role">Administrador</div></div>
+            <nav class="sidebar-nav">
+                <ul style="list-style:none;padding:0;margin:0">
+                    <li class="sidebar-nav-item"><a href="/pages/admin/dashboard.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">🏠</span><span>Dashboard</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/admin/especialidades.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">⚕️</span><span>Especialidades</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/admin/medicos.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon">👨‍⚕️</span><span>Médicos</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/admin/pacientes.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">👥</span><span>Pacientes</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/admin/consultorios.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">🚪</span><span>Consultorios</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/admin/citas.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">📅</span><span>Citas</span></a></li>
+                    <li class="sidebar-nav-item"><a href="/pages/admin/reportes.html" class="sidebar-nav-link"><span class="sidebar-nav-icon">📊</span><span>Reportes</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer"><button class="btn btn-danger btn-block" id="logoutBtn"><span>🚪</span><span>Cerrar Sesión</span></button></div>
+        </aside>
+        <main class="dashboard-main">
+            <div class="dashboard-header animate-fade-in"><h1 class="dashboard-title">Gestión de Médicos</h1><p class="dashboard-subtitle">Registre y administre los médicos del sistema</p></div>
+            <div class="toolbar animate-slide-up">
+                <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="Buscar por nombre, DNI o licencia..."></div>
+                <select id="especialidadFilter" class="filter-select"><option value="">Todas las especialidades</option></select>
+                <button class="btn btn-primary" id="addBtn"><span>➕</span><span>Nuevo Médico</span></button>
+            </div>
+            <div class="table-container animate-slide-up" style="animation-delay:0.1s">
+                <div id="tableContent"><div class="spinner-container"><div class="spinner"></div><p>Cargando médicos...</p></div></div>
+            </div>
+        </main>
+    </div>
+    <div class="modal-overlay" id="formModal">
+        <div class="modal-content">
+            <div class="modal-header"><h3 class="modal-title" id="modalTitle">Nuevo Médico</h3></div>
+            <div class="modal-body">
+                <form id="medicoForm">
+                    <input type="hidden" id="medicoId">
+                    <div class="form-row">
+                        <div class="form-group"><label for="codigoMedico" class="form-label form-label-required">Código Médico</label><input type="text" id="codigoMedico" class="form-control" placeholder="MED001" required maxlength="20"></div>
+                        <div class="form-group"><label for="numeroColegiatura" class="form-label form-label-required">Nro. Colegiatura</label><input type="text" id="numeroColegiatura" class="form-control" placeholder="CMP-12345" required maxlength="20"></div>
+                    </div>
+                    <div class="form-group"><label for="nombres" class="form-label form-label-required">Nombres</label><input type="text" id="nombres" class="form-control" placeholder="Juan Carlos" required minlength="2" maxlength="100"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="apellidoPaterno" class="form-label form-label-required">Apellido Paterno</label><input type="text" id="apellidoPaterno" class="form-control" placeholder="García" required minlength="2" maxlength="100"></div>
+                        <div class="form-group"><label for="apellidoMaterno" class="form-label form-label-required">Apellido Materno</label><input type="text" id="apellidoMaterno" class="form-control" placeholder="López" required minlength="2" maxlength="100"></div>
+                    </div>
+                    <div class="form-group"><label for="idEspecialidad" class="form-label form-label-required">Especialidad</label><select id="idEspecialidad" class="form-control" required><option value="">Seleccione una especialidad</option></select></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="telefono" class="form-label form-label-required">Teléfono</label><input type="tel" id="telefono" class="form-control" placeholder="987654321" required pattern="[0-9]{9}" maxlength="9"></div>
+                        <div class="form-group"><label for="email" class="form-label form-label-required">Email</label><input type="email" id="email" class="form-control" placeholder="medico@hospital.com" required maxlength="100"></div>
+                    </div>
+                    <div class="form-group"><label for="observaciones" class="form-label">Observaciones</label><textarea id="observaciones" class="form-control" placeholder="Información adicional..." maxlength="500" rows="3"></textarea></div>
+                    <div class="form-group"><label for="nombreUsuario" class="form-label form-label-required">Usuario</label><input type="text" id="nombreUsuario" class="form-control" placeholder="jgarcia" required minlength="4" maxlength="50"></div>
+                    <div class="form-group"><label for="contrasena" class="form-label form-label-required">Contraseña</label><input type="password" id="contrasena" class="form-control" placeholder="Mínimo 8 caracteres" required minlength="8" maxlength="100"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="cancelBtn">Cancelar</button>
+                <button class="btn btn-primary" id="saveBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+    <script src="/js/main.js"></script>
+    <script src="/js/utils/auth-guard.js"></script>
+    <script>
+        let medicos = [];
+        let especialidades = [];
+        let selectedId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = getCurrentUser();
+            if (!user || user.rol !== 'ADMIN') {
+                window.location.href = '/pages/auth/login.html';
+                return;
+            }
+
+            document.getElementById('userName').textContent = user.username;
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                logout();
+                window.location.href = '/pages/auth/login.html';
+            });
+
+            document.getElementById('addBtn').addEventListener('click', openAddModal);
+            document.getElementById('cancelBtn').addEventListener('click', closeFormModal);
+            document.getElementById('saveBtn').addEventListener('click', saveMedico);
+            document.getElementById('searchInput').addEventListener('input', filterTable);
+            document.getElementById('especialidadFilter').addEventListener('change', filterTable);
+
+            await loadEspecialidades();
+            await loadMedicos();
+        });
+
+        async function loadEspecialidades() {
+            const token = getToken();
+            try {
+                const response = await fetch(`${API_BASE_URL}/especialidades`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                especialidades = await response.json();
+
+                const select = document.getElementById('idEspecialidad');
+                const filter = document.getElementById('especialidadFilter');
+
+                const options = especialidades.map(e =>
+                    `<option value="${e.idEspecialidad}">${e.nombre}</option>`
+                ).join('');
+
+                select.innerHTML = '<option value="">Seleccione una especialidad</option>' + options;
+                filter.innerHTML = '<option value="">Todas las especialidades</option>' + options;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al cargar especialidades');
+            }
+        }
+
+        async function loadMedicos() {
+            const token = getToken();
+            const container = document.getElementById('tableContent');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/medicos`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                medicos = await response.json();
+                renderTable(medicos);
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<p style="text-align:center;color:var(--error-600)">Error al cargar médicos</p>';
+            }
+        }
+
+        function filterTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const especialidadId = document.getElementById('especialidadFilter').value;
+
+            let filtered = medicos;
+
+            if (search) {
+                filtered = filtered.filter(m =>
+                    m.nombreCompleto.toLowerCase().includes(search) ||
+                    m.codigoMedico.toLowerCase().includes(search) ||
+                    m.numeroColegiatura.toLowerCase().includes(search)
+                );
+            }
+
+            if (especialidadId) {
+                filtered = filtered.filter(m =>
+                    m.especialidad && m.especialidad.idEspecialidad === parseInt(especialidadId)
+                );
+            }
+
+            renderTable(filtered);
+        }
+
+        function renderTable(data) {
+            const container = document.getElementById('tableContent');
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👨‍⚕️</div>
+                        <p class="empty-state-text">No hay médicos registrados</p>
+                        <button class="btn btn-primary" onclick="openAddModal()">Registrar Primer Médico</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre Completo</th>
+                            <th>Especialidad</th>
+                            <th>Colegiatura</th>
+                            <th>Contacto</th>
+                            <th style="text-align:center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(m => `
+                            <tr>
+                                <td><strong>${m.codigoMedico}</strong></td>
+                                <td>Dr(a). ${m.nombreCompleto}</td>
+                                <td><span class="badge badge-primary">${m.especialidad ? m.especialidad.nombre : 'Sin especialidad'}</span></td>
+                                <td>${m.numeroColegiatura}</td>
+                                <td>
+                                    ${m.telefono || '-'}<br>
+                                    <small>${m.email || '-'}</small>
+                                </td>
+                                <td style="text-align:center">
+                                    <div class="action-buttons" style="justify-content:center">
+                                        <button class="btn btn-sm btn-ghost" onclick="viewDetails(${m.idMedico})">👁️ Ver</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function openAddModal() {
+            selectedId = null;
+            document.getElementById('modalTitle').textContent = 'Nuevo Médico';
+            document.getElementById('medicoForm').reset();
+            document.getElementById('medicoId').value = '';
+            document.getElementById('contrasena').required = true;
+            document.getElementById('formModal').classList.add('active');
+        }
+
+        function closeFormModal() {
+            document.getElementById('formModal').classList.remove('active');
+            selectedId = null;
+        }
+
+        async function saveMedico() {
+            const form = document.getElementById('medicoForm');
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const data = {
+                codigoMedico: document.getElementById('codigoMedico').value.trim(),
+                numeroColegiatura: document.getElementById('numeroColegiatura').value.trim(),
+                nombres: document.getElementById('nombres').value.trim(),
+                apellidoPaterno: document.getElementById('apellidoPaterno').value.trim(),
+                apellidoMaterno: document.getElementById('apellidoMaterno').value.trim(),
+                idEspecialidad: parseInt(document.getElementById('idEspecialidad').value),
+                telefono: document.getElementById('telefono').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                observaciones: document.getElementById('observaciones').value.trim() || null,
+                nombreUsuario: document.getElementById('nombreUsuario').value.trim(),
+                contrasena: document.getElementById('contrasena').value
+            };
+
+            console.log('Datos a enviar:', data);
+
+            const token = getToken();
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/medicos`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Médico registrado exitosamente');
+                    closeFormModal();
+                    await loadMedicos();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message || 'No se pudo registrar el médico'}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al conectar con el servidor');
+            }
+        }
+
+        function viewDetails(id) {
+            const m = medicos.find(med => med.idMedico === id);
+            if (!m) return;
+
+            alert(`Detalles del Médico:
+
+Código: ${m.codigoMedico}
+Nombre: Dr(a). ${m.nombreCompleto}
+Colegiatura: ${m.numeroColegiatura}
+Especialidad: ${m.especialidad ? m.especialidad.nombre : 'Sin especialidad'}
+Teléfono: ${m.telefono || 'No registrado'}
+Email: ${m.email || 'No registrado'}
+Observaciones: ${m.observaciones || 'Ninguna'}`);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | Sistema de Reservas Médicas</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .login-left {
+            background: linear-gradient(135deg, #2C5F2D 0%, #97BC62 100%);
+            padding: var(--spacing-3xl);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .login-left-icon {
+            font-size: 80px;
+            margin-bottom: var(--spacing-lg);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .login-left h1 {
+            font-size: var(--font-size-3xl);
+            margin-bottom: var(--spacing-md);
+            font-weight: 700;
+        }
+
+        .login-left p {
+            font-size: var(--font-size-lg);
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .login-right {
+            padding: var(--spacing-3xl);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .login-header h2 {
+            font-size: var(--font-size-2xl);
+            color: var(--gray-800);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .login-header p {
+            color: var(--gray-600);
+            font-size: var(--font-size-base);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: var(--font-size-sm);
+        }
+
+        .form-input-group {
+            position: relative;
+        }
+
+        .form-input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 18px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--error-red);
+        }
+
+        .form-error {
+            display: none;
+            color: var(--error-red);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-xs);
+        }
+
+        .form-error.show {
+            display: block;
+        }
+
+        .form-checkbox-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            color: var(--gray-700);
+        }
+
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .form-link {
+            color: var(--primary-green);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .form-link:hover {
+            color: var(--primary-green-dark);
+            text-decoration: underline;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2C5F2D 0%, #97BC62 100%);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(44, 95, 45, 0.3);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-login .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid var(--white);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn-login.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn-login.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: var(--spacing-xl) 0;
+            color: var(--gray-500);
+            font-size: var(--font-size-sm);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--gray-300);
+        }
+
+        .divider span {
+            padding: 0 var(--spacing-md);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            color: var(--gray-600);
+            font-size: var(--font-size-sm);
+        }
+
+        .register-link a {
+            color: var(--primary-green);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+            display: none;
+            font-size: var(--font-size-sm);
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-error {
+            background: var(--error-red-light);
+            color: var(--error-red);
+            border-left: 4px solid var(--error-red);
+        }
+
+        .alert-success {
+            background: var(--success-green-light);
+            color: var(--success-green);
+            border-left: 4px solid var(--success-green);
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                grid-template-columns: 1fr;
+            }
+
+            .login-left {
+                display: none;
+            }
+
+            .login-right {
+                padding: var(--spacing-xl);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--white);
+            padding: 15px 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-xl);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 10000;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success-green);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--error-red);
+        }
+
+        .toast-icon {
+            font-size: 24px;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--gray-800);
+        }
+
+        .toast-message {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--gray-500);
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-icon">✓</div>
+        <div class="toast-content">
+            <div class="toast-title" id="toastTitle">Éxito</div>
+            <div class="toast-message" id="toastMessage">Operación completada</div>
+        </div>
+        <button class="toast-close" onclick="hideToast()">×</button>
+    </div>
+
+    <div class="login-container">
+        <!-- Left Side - Branding -->
+        <div class="login-left">
+            <div class="login-left-icon">🏥</div>
+            <h1>Bienvenido de vuelta</h1>
+            <p>Accede a tu cuenta para gestionar tus citas médicas de forma rápida y segura</p>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="login-right">
+            <div class="login-header">
+                <h2>Iniciar Sesión</h2>
+                <p>Ingresa tus credenciales para continuar</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="alertMessage" class="alert">
+                <span id="alertText"></span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" novalidate>
+                <!-- Usuario/Email -->
+                <div class="form-group">
+                    <label for="username" class="form-label">Usuario o Email</label>
+                    <div class="form-input-group">
+                        <span class="form-input-icon">👤</span>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            class="form-input" 
+                            placeholder="Ingrese su usuario o email"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+                    <span class="form-error" id="usernameError">Por favor ingrese su usuario o email</span>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <div class="form-input-group">
+                        <span class="form-input-icon">🔒</span>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-input" 
+                            placeholder="Ingrese su contraseña"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+                    <span class="form-error" id="passwordError">Por favor ingrese su contraseña</span>
+                </div>
+
+                <!-- Recordarme y Olvidé contraseña -->
+                <div class="form-checkbox-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" id="remember" name="remember">
+                        <span>Recordarme</span>
+                    </label>
+                    <a href="#" class="form-link">¿Olvidó su contraseña?</a>
+                </div>
+
+                <!-- Botón de Login -->
+                <button type="submit" class="btn-login" id="btnLogin">
+                    <span class="spinner"></span>
+                    <span class="btn-text">🔓 Iniciar Sesión</span>
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>¿No tienes cuenta?</span>
+            </div>
+
+            <!-- Register Link -->
+            <div class="register-link">
+                <a href="registro.html">✏️ Crear una cuenta nueva</a>
+            </div>
+
+            <!-- Volver al inicio -->
+            <div class="register-link" style="margin-top: var(--spacing-md);">
+                <a href="../../index.html">🏠 Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../js/config.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/api/apiClient.js"></script>
+    <script src="../../js/auth/login.js"></script>
+</body>
+</html>

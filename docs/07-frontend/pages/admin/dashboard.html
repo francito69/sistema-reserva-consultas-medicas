@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard del Administrador - Sistema de Reserva de Consultas Médicas">
+    <title>Panel Administrativo | Sistema de Consultas Médicas</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/design-system.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/layouts.css">
+
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+            background-color: var(--bg-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-sidebar {
+                display: none;
+            }
+        }
+
+        /* Sidebar */
+        .dashboard-sidebar {
+            background-color: white;
+            box-shadow: var(--shadow-md);
+            padding: var(--space-6);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-6);
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .sidebar-brand-icon {
+            font-size: var(--text-4xl);
+        }
+
+        .sidebar-brand-text {
+            font-size: var(--text-lg);
+            font-weight: 700;
+            color: var(--medical-purple);
+        }
+
+        .sidebar-user {
+            background-color: var(--info-50);
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-6);
+        }
+
+        .sidebar-user-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+
+        .sidebar-user-role {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .sidebar-nav-item {
+            list-style: none;
+            margin-bottom: var(--space-2);
+        }
+
+        .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            transition: all var(--transition-fast);
+        }
+
+        .sidebar-nav-link:hover {
+            background-color: var(--info-50);
+            color: var(--info-600);
+        }
+
+        .sidebar-nav-link.active {
+            background-color: var(--medical-purple);
+            color: white;
+        }
+
+        .sidebar-nav-icon {
+            font-size: var(--text-xl);
+        }
+
+        .sidebar-footer {
+            padding-top: var(--space-6);
+            border-top: 2px solid var(--border-light);
+        }
+
+        /* Main Content */
+        .dashboard-main {
+            padding: var(--space-8);
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: var(--space-8);
+        }
+
+        .dashboard-title {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .dashboard-subtitle {
+            font-size: var(--text-lg);
+            color: var(--text-secondary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        @media (max-width: 1024px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            background-color: white;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-title {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            margin-bottom: var(--space-6);
+            color: var(--text-primary);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Top Lists */
+        .top-lists {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        @media (max-width: 768px) {
+            .top-lists {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .top-list-card {
+            background-color: white;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .top-list-title {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            margin-bottom: var(--space-4);
+            color: var(--text-primary);
+        }
+
+        .top-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-2);
+            transition: all var(--transition-fast);
+        }
+
+        .top-item:hover {
+            background-color: var(--gray-50);
+        }
+
+        .top-item-rank {
+            width: 2rem;
+            height: 2rem;
+            background-color: var(--primary-100);
+            color: var(--primary-700);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: var(--text-sm);
+            flex-shrink: 0;
+        }
+
+        .top-item-rank.gold {
+            background-color: #FFD700;
+            color: #8B6914;
+        }
+
+        .top-item-rank.silver {
+            background-color: #C0C0C0;
+            color: #6B6B6B;
+        }
+
+        .top-item-rank.bronze {
+            background-color: #CD7F32;
+            color: #5C3A1A;
+        }
+
+        .top-item-info {
+            flex: 1;
+        }
+
+        .top-item-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .top-item-count {
+            font-weight: 700;
+            color: var(--primary-600);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background-color: white;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-8);
+        }
+
+        .quick-actions-title {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            margin-bottom: var(--space-4);
+            color: var(--text-primary);
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-4);
+        }
+
+        .quick-action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-5);
+            background-color: var(--info-50);
+            border: 2px solid var(--info-100);
+            border-radius: var(--radius-xl);
+            text-decoration: none;
+            color: var(--info-700);
+            font-weight: 600;
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .quick-action-btn:hover {
+            background-color: var(--info-100);
+            border-color: var(--info-300);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .quick-action-icon {
+            font-size: var(--text-4xl);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-grid">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-brand">
+                <span class="sidebar-brand-icon">👨‍💼</span>
+                <span class="sidebar-brand-text">Panel Admin</span>
+            </div>
+
+            <div class="sidebar-user">
+                <div class="sidebar-user-name" id="userName">Cargando...</div>
+                <div class="sidebar-user-role">Administrador</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/admin/dashboard.html" class="sidebar-nav-link active">
+                            <span class="sidebar-nav-icon">🏠</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/admin/medicos.html" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon">👨‍⚕️</span>
+                            <span>Médicos</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/admin/pacientes.html" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon">👥</span>
+                            <span>Pacientes</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/admin/especialidades.html" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon">🏥</span>
+                            <span>Especialidades</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/admin/consultorios.html" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon">🚪</span>
+                            <span>Consultorios</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/admin/citas.html" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon">📋</span>
+                            <span>Todas las Citas</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="/pages/admin/reportes.html" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon">📊</span>
+                            <span>Reportes</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="btn btn-danger btn-block" id="logoutBtn">
+                    <span>🚪</span>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Header -->
+            <div class="dashboard-header animate-fade-in">
+                <h1 class="dashboard-title">Panel de Administración</h1>
+                <p class="dashboard-subtitle">Vista general del sistema de reserva de consultas médicas</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid animate-slide-up">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="totalPacientes">0</div>
+                            <div class="stat-card-label">Pacientes Registrados</div>
+                        </div>
+                        <div class="stat-card-icon stat-card-icon-primary">
+                            👥
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-card-trend stat-card-trend-up" id="pacientesTrend">
+                            +0% este mes
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="totalMedicos">0</div>
+                            <div class="stat-card-label">Médicos Activos</div>
+                        </div>
+                        <div class="stat-card-icon stat-card-icon-success">
+                            👨‍⚕️
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-card-trend stat-card-trend-neutral">
+                            En el sistema
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="citasHoy">0</div>
+                            <div class="stat-card-label">Citas de Hoy</div>
+                        </div>
+                        <div class="stat-card-icon stat-card-icon-warning">
+                            📅
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-card-trend stat-card-trend-neutral" id="citasHoyDetalle">
+                            Cargando...
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="tasaCancelacion">0%</div>
+                            <div class="stat-card-label">Tasa de Cancelación</div>
+                        </div>
+                        <div class="stat-card-icon stat-card-icon-danger">
+                            ❌
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-card-trend stat-card-trend-neutral" id="tasaNoPresentacion">
+                            No presentación: 0%
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions animate-slide-up" style="animation-delay: 0.1s;">
+                <h2 class="quick-actions-title">Acciones Rápidas</h2>
+                <div class="quick-actions-grid">
+                    <a href="/pages/admin/medicos.html" class="quick-action-btn">
+                        <span class="quick-action-icon">👨‍⚕️</span>
+                        <span>Registrar Médico</span>
+                    </a>
+                    <a href="/pages/admin/pacientes.html" class="quick-action-btn">
+                        <span class="quick-action-icon">👤</span>
+                        <span>Registrar Paciente</span>
+                    </a>
+                    <a href="/pages/admin/especialidades.html" class="quick-action-btn">
+                        <span class="quick-action-icon">🏥</span>
+                        <span>Especialidades</span>
+                    </a>
+                    <a href="/pages/admin/consultorios.html" class="quick-action-btn">
+                        <span class="quick-action-icon">🚪</span>
+                        <span>Consultorios</span>
+                    </a>
+                    <a href="/pages/admin/reportes.html" class="quick-action-btn">
+                        <span class="quick-action-icon">📊</span>
+                        <span>Generar Reportes</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="chart-card">
+                    <h3 class="chart-title">Citas por Semana (Últimos 30 días)</h3>
+                    <div class="chart-container">
+                        <canvas id="citasSemanalesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 class="chart-title">Citas por Especialidad</h3>
+                    <div class="chart-container">
+                        <canvas id="especialidadesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Lists -->
+            <div class="top-lists animate-slide-up" style="animation-delay: 0.3s;">
+                <div class="top-list-card">
+                    <h3 class="top-list-title">🏆 Top 5 Médicos Más Solicitados</h3>
+                    <div id="topMedicosList">
+                        <div class="spinner-container">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="top-list-card">
+                    <h3 class="top-list-title">⭐ Top 5 Especialidades Más Solicitadas</h3>
+                    <div id="topEspecialidadesList">
+                        <div class="spinner-container">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/utils/auth-guard.js"></script>
+    <script>
+        let citasSemanalesChart = null;
+        let especialidadesChart = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Verificar autenticación
+            const user = getCurrentUser();
+            if (!user || user.rol !== 'ADMIN') {
+                window.location.href = '/pages/auth/login.html';
+                return;
+            }
+
+            // Mostrar nombre de usuario
+            document.getElementById('userName').textContent = user.username;
+
+            // Botón de cerrar sesión
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                logout();
+                window.location.href = '/pages/auth/login.html';
+            });
+
+            // Cargar datos del dashboard
+            await loadDashboardData();
+        });
+
+        async function loadDashboardData() {
+            const token = getToken();
+
+            try {
+                // Cargar todas las estadísticas en paralelo
+                const [
+                    pacientesData,
+                    medicosData,
+                    citasData,
+                    topMedicosData,
+                    topEspecialidadesData
+                ] = await Promise.all([
+                    fetch(`${API_BASE_URL}/pacientes`, { headers: { 'Authorization': `Bearer ${token}` }}).then(r => r.json()),
+                    fetch(`${API_BASE_URL}/medicos`, { headers: { 'Authorization': `Bearer ${token}` }}).then(r => r.json()),
+                    fetch(`${API_BASE_URL}/citas`, { headers: { 'Authorization': `Bearer ${token}` }}).then(r => r.json()),
+                    fetch(`${API_BASE_URL}/reportes/top-medicos`, { headers: { 'Authorization': `Bearer ${token}` }}).then(r => r.json()).catch(() => []),
+                    fetch(`${API_BASE_URL}/reportes/top-especialidades`, { headers: { 'Authorization': `Bearer ${token}` }}).then(r => r.json()).catch(() => [])
+                ]);
+
+                // Procesar estadísticas básicas
+                document.getElementById('totalPacientes').textContent = pacientesData.length;
+                document.getElementById('totalMedicos').textContent = medicosData.length;
+
+                // Procesar citas
+                processCitasData(citasData);
+
+                // Renderizar tops
+                renderTopMedicos(topMedicosData.slice(0, 5));
+                renderTopEspecialidades(topEspecialidadesData.slice(0, 5));
+
+                // Crear gráficos
+                createCitasSemanalesChart(citasData);
+                createEspecialidadesChart(citasData);
+
+            } catch (error) {
+                console.error('Error al cargar datos del dashboard:', error);
+            }
+        }
+
+        function processCitasData(citas) {
+            const today = new Date().toDateString();
+            const citasHoy = citas.filter(c => new Date(c.fechaCita).toDateString() === today);
+
+            const confirmadas = citasHoy.filter(c => c.estado === 'CONFIRMADA' || c.estado === 'PROGRAMADA').length;
+            const atendidas = citasHoy.filter(c => c.estado === 'ATENDIDA').length;
+            const canceladas = citasHoy.filter(c => c.estado === 'CANCELADA').length;
+
+            document.getElementById('citasHoy').textContent = citasHoy.length;
+            document.getElementById('citasHoyDetalle').textContent =
+                `✓ ${confirmadas} | ✅ ${atendidas} | ❌ ${canceladas}`;
+
+            // Calcular tasas
+            const totalCitas = citas.length;
+            const totalCanceladas = citas.filter(c => c.estado === 'CANCELADA').length;
+            const totalNoPresentados = citas.filter(c => c.estado === 'NO_PRESENTADO').length;
+
+            const tasaCancelacion = totalCitas > 0 ? ((totalCanceladas / totalCitas) * 100).toFixed(1) : 0;
+            const tasaNoPresentacion = totalCitas > 0 ? ((totalNoPresentados / totalCitas) * 100).toFixed(1) : 0;
+
+            document.getElementById('tasaCancelacion').textContent = `${tasaCancelacion}%`;
+            document.getElementById('tasaNoPresentacion').textContent = `No presentación: ${tasaNoPresentacion}%`;
+        }
+
+        function renderTopMedicos(medicos) {
+            const container = document.getElementById('topMedicosList');
+
+            if (medicos.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No hay datos disponibles</p>';
+                return;
+            }
+
+            container.innerHTML = medicos.map((medico, index) => {
+                const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                return `
+                    <div class="top-item">
+                        <div class="top-item-rank ${rankClass}">${index + 1}</div>
+                        <div class="top-item-info">
+                            <div class="top-item-name">${medico.nombre || `Médico ${index + 1}`}</div>
+                        </div>
+                        <div class="top-item-count">${medico.cantidadCitas || 0}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderTopEspecialidades(especialidades) {
+            const container = document.getElementById('topEspecialidadesList');
+
+            if (especialidades.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No hay datos disponibles</p>';
+                return;
+            }
+
+            container.innerHTML = especialidades.map((esp, index) => {
+                const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                return `
+                    <div class="top-item">
+                        <div class="top-item-rank ${rankClass}">${index + 1}</div>
+                        <div class="top-item-info">
+                            <div class="top-item-name">${esp.nombre || `Especialidad ${index + 1}`}</div>
+                        </div>
+                        <div class="top-item-count">${esp.cantidadCitas || 0}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function createCitasSemanalesChart(citas) {
+            const ctx = document.getElementById('citasSemanalesChart').getContext('2d');
+
+            // Agrupar citas por semana (últimos 30 días)
+            const today = new Date();
+            const last30Days = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+
+            const citasRecientes = citas.filter(c => new Date(c.fechaCita) >= last30Days);
+
+            // Agrupar por semana
+            const semanas = {};
+            citasRecientes.forEach(cita => {
+                const fecha = new Date(cita.fechaCita);
+                const semana = `Semana ${Math.floor((today - fecha) / (7 * 24 * 60 * 60 * 1000)) + 1}`;
+                semanas[semana] = (semanas[semana] || 0) + 1;
+            });
+
+            const labels = Object.keys(semanas).reverse();
+            const data = Object.values(semanas).reverse();
+
+            if (citasSemanalesChart) {
+                citasSemanalesChart.destroy();
+            }
+
+            citasSemanalesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels.length > 0 ? labels : ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+                    datasets: [{
+                        label: 'Citas',
+                        data: data.length > 0 ? data : [0, 0, 0, 0],
+                        borderColor: '#0066CC',
+                        backgroundColor: 'rgba(0, 102, 204, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createEspecialidadesChart(citas) {
+            const ctx = document.getElementById('especialidadesChart').getContext('2d');
+
+            // Agrupar por especialidad
+            const especialidades = {};
+            citas.forEach(cita => {
+                const esp = cita.especialidad || 'Sin especialidad';
+                especialidades[esp] = (especialidades[esp] || 0) + 1;
+            });
+
+            // Top 5 especialidades
+            const sorted = Object.entries(especialidades)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            const labels = sorted.map(([name]) => name);
+            const data = sorted.map(([, count]) => count);
+
+            const colors = [
+                '#0066CC',
+                '#10B981',
+                '#F59E0B',
+                '#EF4444',
+                '#8B5CF6'
+            ];
+
+            if (especialidadesChart) {
+                especialidadesChart.destroy();
+            }
+
+            especialidadesChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels.length > 0 ? labels : ['Sin datos'],
+                    datasets: [{
+                        data: data.length > 0 ? data : [1],
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

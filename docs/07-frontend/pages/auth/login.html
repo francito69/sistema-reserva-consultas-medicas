@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Iniciar Sesión - Sistema de Reserva de Consultas Médicas">
+    <title>Iniciar Sesión - Sistema de Consultas Médicas</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/design-system.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/layouts.css">
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <div class="auth-card">
+                <!-- Logo y header -->
+                <div class="auth-logo">
+                    <div class="auth-logo-icon">🏥</div>
+                    <a href="/" style="color: var(--text-secondary); font-size: var(--text-sm); text-decoration: none;">
+                        ← Volver al inicio
+                    </a>
+                </div>
+
+                <!-- Título -->
+                <h1 class="auth-title">Iniciar Sesión</h1>
+                <p class="auth-subtitle">
+                    Ingrese sus credenciales para acceder al sistema
+                </p>
+
+                <!-- Alerta de mensaje -->
+                <div id="alertMessage" style="display: none;"></div>
+
+                <!-- Formulario -->
+                <form id="loginForm" class="auth-form" novalidate>
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label for="username" class="form-label form-label-required">Usuario o Email</label>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            class="form-control"
+                            placeholder="Ingrese su usuario o email"
+                            required
+                            autocomplete="username"
+                            autofocus
+                        >
+                        <span class="form-error" id="usernameError"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password" class="form-label form-label-required">Contraseña</label>
+                        <div style="position: relative;">
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Ingrese su contraseña"
+                                required
+                                autocomplete="current-password"
+                                style="padding-right: 3rem;"
+                            >
+                            <button
+                                type="button"
+                                id="togglePassword"
+                                style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.25rem;"
+                                aria-label="Mostrar/Ocultar contraseña"
+                            >
+                                👁️
+                            </button>
+                        </div>
+                        <span class="form-error" id="passwordError"></span>
+                    </div>
+
+                    <!-- Remember me y Forgot password -->
+                    <div class="flex justify-between items-center" style="margin-bottom: var(--space-6);">
+                        <div class="form-check">
+                            <input type="checkbox" id="rememberMe" class="form-check-input">
+                            <label for="rememberMe" class="form-check-label">Recordarme</label>
+                        </div>
+                        <a href="/pages/auth/forgot-password.html" style="font-size: var(--text-sm); color: var(--primary-500); font-weight: 600;">
+                            ¿Olvidó su contraseña?
+                        </a>
+                    </div>
+
+                    <!-- Submit button -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block btn-lg" id="loginButton">
+                            <span id="loginButtonText">Iniciar Sesión</span>
+                            <div class="spinner spinner-sm" id="loginSpinner" style="display: none; margin-left: auto;"></div>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Footer -->
+                <div class="auth-footer">
+                    <p class="auth-footer-text">
+                        ¿No tiene cuenta?
+                        <a href="/pages/auth/registro.html" class="auth-footer-link">Regístrese aquí</a>
+                    </p>
+                </div>
+
+                <!-- Información de credenciales para desarrollo -->
+                <div style="margin-top: var(--space-8); padding: var(--space-4); background-color: var(--info-100); border-radius: var(--radius-lg); border: 1px solid var(--info-500);">
+                    <p style="font-size: var(--text-xs); color: var(--info-700); margin-bottom: var(--space-2); font-weight: 600;">
+                        🔒 Credenciales de prueba:
+                    </p>
+                    <div style="font-size: var(--text-xs); color: var(--info-700); font-family: monospace;">
+                        <div><strong>Admin:</strong> admin / admin123</div>
+                        <div><strong>Médico:</strong> dr.garcia / medico123</div>
+                        <div><strong>Paciente:</strong> juan.perez / paciente123</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script>
+        // Validación en tiempo real y manejo del formulario
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginButton = document.getElementById('loginButton');
+            const loginButtonText = document.getElementById('loginButtonText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const alertMessage = document.getElementById('alertMessage');
+            const togglePasswordButton = document.getElementById('togglePassword');
+
+            // Toggle password visibility
+            togglePasswordButton.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                togglePasswordButton.textContent = type === 'password' ? '👁️' : '🙈';
+            });
+
+            // Validación en tiempo real
+            function validateUsername() {
+                const username = usernameInput.value.trim();
+                const errorElement = document.getElementById('usernameError');
+
+                if (!username) {
+                    usernameInput.classList.add('is-invalid');
+                    usernameInput.classList.remove('is-valid');
+                    errorElement.textContent = 'El usuario es obligatorio';
+                    return false;
+                }
+
+                if (username.length < 3) {
+                    usernameInput.classList.add('is-invalid');
+                    usernameInput.classList.remove('is-valid');
+                    errorElement.textContent = 'El usuario debe tener al menos 3 caracteres';
+                    return false;
+                }
+
+                usernameInput.classList.remove('is-invalid');
+                usernameInput.classList.add('is-valid');
+                errorElement.textContent = '';
+                return true;
+            }
+
+            function validatePassword() {
+                const password = passwordInput.value;
+                const errorElement = document.getElementById('passwordError');
+
+                if (!password) {
+                    passwordInput.classList.add('is-invalid');
+                    passwordInput.classList.remove('is-valid');
+                    errorElement.textContent = 'La contraseña es obligatoria';
+                    return false;
+                }
+
+                if (password.length < 6) {
+                    passwordInput.classList.add('is-invalid');
+                    passwordInput.classList.remove('is-valid');
+                    errorElement.textContent = 'La contraseña debe tener al menos 6 caracteres';
+                    return false;
+                }
+
+                passwordInput.classList.remove('is-invalid');
+                passwordInput.classList.add('is-valid');
+                errorElement.textContent = '';
+                return true;
+            }
+
+            // Validar al perder el foco
+            usernameInput.addEventListener('blur', validateUsername);
+            passwordInput.addEventListener('blur', validatePassword);
+
+            // Validar mientras escribe (con debounce)
+            let usernameTimeout, passwordTimeout;
+
+            usernameInput.addEventListener('input', () => {
+                clearTimeout(usernameTimeout);
+                usernameTimeout = setTimeout(validateUsername, 500);
+            });
+
+            passwordInput.addEventListener('input', () => {
+                clearTimeout(passwordTimeout);
+                passwordTimeout = setTimeout(validatePassword, 500);
+            });
+
+            // Mostrar alerta
+            function showAlert(message, type = 'error') {
+                alertMessage.className = `alert alert-${type}`;
+                alertMessage.innerHTML = `
+                    <div class="alert-title">${type === 'success' ? '✓ Éxito' : '✗ Error'}</div>
+                    ${message}
+                `;
+                alertMessage.style.display = 'block';
+                alertMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Ocultar alerta
+            function hideAlert() {
+                alertMessage.style.display = 'none';
+            }
+
+            // Manejo del formulario
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                hideAlert();
+
+                // Validar todos los campos
+                const isUsernameValid = validateUsername();
+                const isPasswordValid = validatePassword();
+
+                if (!isUsernameValid || !isPasswordValid) {
+                    showAlert('Por favor, corrija los errores en el formulario');
+                    return;
+                }
+
+                // Deshabilitar botón y mostrar spinner
+                loginButton.disabled = true;
+                loginButtonText.textContent = 'Iniciando sesión...';
+                loginSpinner.style.display = 'inline-block';
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username: usernameInput.value.trim(),
+                            password: passwordInput.value
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Guardar token y datos del usuario
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('user', JSON.stringify({
+                            username: data.username,
+                            rol: data.rol,
+                            idReferencia: data.idReferencia
+                        }));
+
+                        showAlert('Inicio de sesión exitoso. Redirigiendo...', 'success');
+
+                        // Redirigir según el rol
+                        setTimeout(() => {
+                            switch (data.rol) {
+                                case 'PACIENTE':
+                                    window.location.href = '/pages/paciente/dashboard.html';
+                                    break;
+                                case 'MEDICO':
+                                    window.location.href = '/pages/medico/dashboard.html';
+                                    break;
+                                case 'ADMIN':
+                                    window.location.href = '/pages/admin/dashboard.html';
+                                    break;
+                                default:
+                                    window.location.href = '/';
+                            }
+                        }, 1000);
+                    } else {
+                        showAlert(data.message || 'Usuario o contraseña incorrectos');
+                        // Habilitar botón nuevamente
+                        loginButton.disabled = false;
+                        loginButtonText.textContent = 'Iniciar Sesión';
+                        loginSpinner.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert('Error al conectar con el servidor. Por favor, intente nuevamente.');
+                    // Habilitar botón nuevamente
+                    loginButton.disabled = false;
+                    loginButtonText.textContent = 'Iniciar Sesión';
+                    loginSpinner.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
